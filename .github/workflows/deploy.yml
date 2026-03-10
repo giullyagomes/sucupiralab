@@ -1,0 +1,55 @@
+name: Build e Deploy no GitHub Pages
+
+on:
+  push:
+    branches:
+      - main          # dispara toda vez que você faz push na branch main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Impede deploys simultâneos
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      # 1. Baixa o código do repositório
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Configura o Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # 3. Instala dependências
+      - name: Instalar dependências
+        run: npm ci
+
+      # 4. Compila o projeto
+      - name: Build
+        run: npm run build
+
+      # 5. Empacota os arquivos compilados para o GitHub Pages
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      # 6. Faz o deploy no GitHub Pages
+      - name: Deploy
+        id: deploy
+        uses: actions/deploy-pages@v4

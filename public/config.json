@@ -1,0 +1,12 @@
+{
+  "_instrucoes": "Preencha os campos abaixo com as credenciais do seu projeto Firebase para habilitar o login com Google. Deixe os campos em branco para usar apenas o modo PAT+GitHub (sem autenticação Google).",
+
+  "firebase": {
+    "apiKey": "",
+    "authDomain": "",
+    "projectId": "",
+    "storageBucket": "",
+    "messagingSenderId": "",
+    "appId": ""
+  }
+}
