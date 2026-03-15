@@ -15,7 +15,7 @@ A autenticação é feita via Firebase Authentication (Google OAuth), e toda a p
 > Toda a configuração é feita pelo navegador e pela interface do GitHub.
 > Nenhum terminal, nenhum build local — o GitHub cuida de tudo automaticamente.
 
-![SucupiraLAB](./screenshots/10-producao.png)
+![SucupiraLAB](./screenshots/07-producao.jpg)
 
 ---
 
@@ -159,61 +159,57 @@ O primeiro deploy demora ~2 minutos. Você pode acompanhar em:
 
 Acompanhe, registre e organize a prestação de contas de projetos e financiamentos. Este módulo permite arquivar documentos comprobatórios, controlar prazos e monitorar as despesas de projetos financiados por agências de fomento.
 
-![SucupiraLAB](./screenshots/02-prestacoes-lista.png)
+![SucupiraLAB](./screenshots/02-prestacoes.jpg)
 
-![SucupiraLAB](./screenshots/03-prestacoes-despesas.png)
 
-![SucupiraLAB](./screenshots/14-nova-prestacao-dialog.png)
-   
-### 2. Projetos Financiados
-
-Cadastre e descreva o financiamento obtido com projetos de pesquisa. O módulo reúne informações sobre editais, agências financiadoras, cronogramas, valores concedidos e equipe envolvida, para que você tenha sempre um histórico atualizado desses dados.
-
-![SucupiraLAB](./screenshots/04-projetos.png)
-
-### 3. Orientações em Andamento
-
-Registre orientandos(as), níveis de formação, temas de pesquisa, etapas do trabalho e prazos relevantes. Ferramenta para acompanhar atividades de orientação acadêmica, incluindo um diário de reuniões de orientação e indicações de leitura.
-
-![SucupiraLAB](./screenshots/05-orientacoes-lista.png)
-
-![SucupiraLAB](./screenshots/06-orientacoes-tarefas.png)
-
-### 4. Nucleação
-
-Documente a inserção profissional de egressos do programa ou sob sua orientação: mestres, doutores e pós-doutores que foram absorvidos por instituições públicas ou privadas, ou contemplados com bolsas de fomento.
-
-![SucupiraLAB](./screenshots/05-orientacoes-lista.png)
-
-![SucupiraLAB](./screenshots/06-orientacoes-tarefas.png)
-
-### 5. Produção Científica
-
-Catalogue e organize sua produção acadêmica, como artigos, capítulos, livros e trabalhos em eventos. Facilita o acompanhamento de publicações, coautorias e veículos de divulgação científica. O módulo importa diretamente da sua página no Lattes os dados, basta que você salve o seu currículo como um arquivo HTML.
-
-![SucupiraLAB](./screenshots/10-producao.png)
-
-### 6. Internacionalização
-
-Catalogue projetos e atividades de cooperação internacional do programa ou que você integra: parcerias com instituições estrangeiras, editais, financiamentos e equipes envolvidas.
-
-![SucupiraLAB](./screenshots/05-orientacoes-lista.png)
-
-![SucupiraLAB](./screenshots/06-orientacoes-tarefas.png)
-
-### 7. Discursos Qualificados
+### 2. Discursos Qualificados
 
 Sistematize e descreva produtos e pesquisas de alto impacto social, discursos, palestras, conferências, relatórios ou participações públicas que tenham relevância social, política ou institucional. O módulo permite documentar contexto, público, data e materiais associados.
 
-![SucupiraLAB](./screenshots/11-discursos.png)
+![SucupiraLAB](./screenshots/03-discursos.jpg)
+
+   
+### 3. Projetos Financiados
+
+Cadastre e descreva o financiamento obtido com projetos de pesquisa. O módulo reúne informações sobre editais, agências financiadoras, cronogramas, valores concedidos e equipe envolvida, para que você tenha sempre um histórico atualizado desses dados.
+
+![SucupiraLAB](./screenshots/04-projetos.jpg)
+
+
+### 4. Orientações em Andamento
+
+Registre orientandos(as), níveis de formação, temas de pesquisa, etapas do trabalho e prazos relevantes. Ferramenta para acompanhar atividades de orientação acadêmica, incluindo um diário de reuniões de orientação e indicações de leitura.
+
+![SucupiraLAB](./screenshots/05-orientacoes.jpg)
+
+
+### 5. Nucleação
+
+Documente a inserção profissional de egressos do programa ou sob sua orientação: mestres, doutores e pós-doutores que foram absorvidos por instituições públicas ou privadas, ou contemplados com bolsas de fomento.
+
+![SucupiraLAB](./screenshots/06-nucleacao.jpg)
+
+
+### 6. Produção Científica
+
+Catalogue e organize sua produção acadêmica, como artigos, capítulos, livros e trabalhos em eventos. Facilita o acompanhamento de publicações, coautorias e veículos de divulgação científica. O módulo importa diretamente da sua página no Lattes os dados, basta que você salve o seu currículo como um arquivo HTML.
+
+![SucupiraLAB](./screenshots/07-producao.jpg)
+
+
+### 7. Internacionalização
+
+Catalogue projetos e atividades de cooperação internacional do programa ou que você integra: parcerias com instituições estrangeiras, editais, financiamentos e equipes envolvidas.
+
+![SucupiraLAB](./screenshots/08-internacionalizacao.jpg)
+
 
 ### 8. Fluxo e Follow-Up de Submissões
 
 Monitore e acompanhe suas submissões de manuscritos a periódicos ou eventos, registrando cada etapa de revisão, decisões editoriais e o histórico de versões e comunicações entre autores e editores. Sistema de acompanhamento do ciclo de submissão de trabalhos acadêmicos. 
 
-![SucupiraLAB](./screenshots/12-submissoes-kanban.png)
+![SucupiraLAB](./screenshots/09-submissoes.jpg)
 
-![SucupiraLAB](./screenshots/13-submissoes-kanban-direita.png)
 
 ---
 
