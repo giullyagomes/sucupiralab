@@ -2,15 +2,15 @@
 
 [![DOI](https://zenodo.org/badge/1178336961.svg)](https://doi.org/10.5281/zenodo.19058247)
 
-O SucupiraLAB é uma aplicação web de gestão acadêmica voltada para pesquisadores, docentes e coordenadores de pós-graduação, e projetada para organizar e acompanhar as atividades de rotina de gestão de projetos de pesquisa exigidas, incluindo dados colhidos para alimentar a Plataforma Sucupira da CAPES. Por meio de uma interface moderna, o sistema permite gerenciar prestações de contas com despesas e documentos comprobatórios em anexo, discursos qualificados, importação e tabulação da produção científica, projetos financiados, orientações de alunos com controle de tarefas, e monitoramento do fluxo de submissões de artigos em formato kanban — tudo com geração de relatórios em PDF e exportação para planilhas. Diferentemente de soluções tradicionais, o SucupiraLAB não utiliza banco de dados próprio: todos os dados são armazenados diretamente em um repositório GitHub privado do próprio usuário, garantindo total controle, privacidade e portabilidade das informações.
+O SucupiraLAB é uma aplicação web de gestão acadêmica voltada para pesquisadores, docentes e coordenadores de pós-graduação, e projetada para organizar e acompanhar as atividades de rotina de gestão de projetos de pesquisa exigidas, incluindo dados colhidos para alimentar a Plataforma Sucupira da CAPES. Por meio de uma interface moderna, o sistema permite gerenciar prestações de contas com despesas e documentos comprobatórios em anexo, discursos qualificados, importação e tabulação da produção científica, projetos financiados, orientações de alunos com controle de tarefas, nucleação de egressos e atividades de internacionalização — tudo com geração de relatórios em PDF e exportação para planilhas. Diferentemente de soluções tradicionais, o SucupiraLAB não utiliza banco de dados próprio: todos os dados são armazenados diretamente em um repositório GitHub privado do próprio usuário, garantindo total controle, privacidade e portabilidade das informações.
 
 <img src="screenshots/ombudsman-logo.png" alt="Desenvolvido por Viktor Chagas" align="right" width="100">O software foi desenvolvido por [Viktor Chagas](https://scholar.google.com/citations?user=F02DKoAAAAAJ&hl=en) e pelo [coLAB/UFF](http://colab-uff.github.io), com auxílio do Claude Code Sonnet 4.6 para as tarefas de programação. Os autores agradecem a Rafael Cardoso Sampaio pelos comentários e sugestões de adoção de ferramentas de IA, que levaram ao planejamento inicial da aplicação.
 
 # :octocat: Frameworks
 
-O SucupiraLAB foi desenvolvido em TypeScript com React 19 como framework de interface, utilizando Vite 7 como bundler e servidor de desenvolvimento. A estilização é feita com Tailwind CSS v4 (via plugin oficial para Vite). Para roteamento foi utilizado React Router v7 com rotas aninhadas, e o gerenciamento de dados assíncronos é feito com TanStack Query v5. Os componentes de interface seguem o padrão shadcn/ui, construídos sobre primitivos Radix UI com utilitários cva, clsx e tailwind-merge. Recursos adicionais incluem @hello-pangea/dnd para drag-and-drop no kanban, Recharts para gráficos, jsPDF + jspdf-autotable para exportação em PDF, xlsx para planilhas e js-yaml para serialização dos dados.
+O SucupiraLAB foi desenvolvido em TypeScript com React 19 como framework de interface, utilizando Vite 7 como bundler e servidor de desenvolvimento. A estilização é feita com Tailwind CSS v4 (via plugin oficial para Vite). Para roteamento foi utilizado React Router v7 com rotas aninhadas, e o gerenciamento de dados assíncronos é feito com TanStack Query v5. Os componentes de interface seguem o padrão shadcn/ui, construídos sobre primitivos Radix UI com utilitários cva, clsx e tailwind-merge. Recursos adicionais incluem Recharts para gráficos, jsPDF + jspdf-autotable para exportação em PDF, xlsx para planilhas e js-yaml para serialização dos dados.
 
-A autenticação é feita via Firebase Authentication (Google OAuth), e toda a persistência de dados ocorre diretamente no repositório GitHub do usuário por meio da GitHub Contents API (REST), sem banco de dados externo. Os dados são armazenados em arquivos YAML e anexos em base64, organizados por entidade no repositório. O projeto não depende de nenhum serviço de backend próprio — o navegador se comunica diretamente com as APIs do GitHub e do Firebase.
+A persistência de dados ocorre diretamente no repositório GitHub do usuário por meio da GitHub Contents API (REST), sem banco de dados externo. Os dados são armazenados em arquivos YAML e anexos em base64, organizados por entidade no repositório. O projeto não depende de nenhum serviço de backend próprio — o navegador se comunica diretamente com a API do GitHub.
 
 ---
 
@@ -29,7 +29,7 @@ Sistematize e descreva produtos e pesquisas de alto impacto social, discursos, p
 
 ![SucupiraLAB](./screenshots/03-discursos.jpg)
 
-   
+
 ### 3. Projetos Financiados
 
 Cadastre e descreva o financiamento obtido com projetos de pesquisa. O módulo reúne informações sobre editais, agências financiadoras, cronogramas, valores concedidos e equipe envolvida, para que você tenha sempre um histórico atualizado desses dados.
@@ -64,15 +64,6 @@ Catalogue projetos e atividades de cooperação internacional do programa ou que
 
 ![SucupiraLAB](./screenshots/08-internacionalizacao.jpg)
 
-
-### 8. Fluxo e Follow-Up de Submissões
-
-Monitore e acompanhe suas submissões de manuscritos a periódicos ou eventos, registrando cada etapa de revisão, decisões editoriais e o histórico de versões e comunicações entre autores e editores. Sistema de acompanhamento do ciclo de submissão de trabalhos acadêmicos. 
-
-![SucupiraLAB](./screenshots/09-submissoes.jpg)
-
----
-
 ---
 
 # 🚀 Instalação do SucupiraLAB — Passo a passo
@@ -80,7 +71,7 @@ Monitore e acompanhe suas submissões de manuscritos a periódicos ou eventos, r
 > Toda a configuração é feita pelo navegador e pela interface do GitHub.
 > Nenhum terminal, nenhum build local — o GitHub cuida de tudo automaticamente.
 
-![SucupiraLAB](./screenshots/07-producao.jpg)
+![SucupiraLAB](./screenshots/01-login.png)
 
 ---
 
@@ -177,19 +168,13 @@ data/
   projetos/            ← Projetos Financiados
   orientacoes/         ← Orientações
   producao/            ← Produção Científica
-  submissoes/          ← Submissões
   nucleacoes/          ← Nucleação
   internacionalizacao/ ← Internacionalização
 attachments/           ← Anexos (base64 via API)
 ```
 
 > Cada registro é um arquivo `.yaml` independente, editável diretamente pelo GitHub se necessário.
-> Os dados são salvos em arquivos `.yaml` no seu repositório privado.
-> Cada usuário que logar com uma conta Google diferente terá acesso apenas aos seus próprios dados.
-
-![SucupiraLAB](./screenshots/01-login.png)
 
 ---
 
-
-*SucupiraLAB — Gestão acadêmica · um projeto desenvolvido por [coLAB/UFF](https://colab-uff.github.io/)*
+*SucupiraLAB — App de gestão acadêmica · um projeto desenvolvido por [coLAB/UFF](https://colab-uff.github.io/)*
