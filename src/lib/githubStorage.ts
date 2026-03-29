@@ -9,7 +9,6 @@
 //   data/projetos/{id}.yaml
 //   data/orientacoes/{id}.yaml  — Orientacao + embedded Tarefas
 //   data/producao/{id}.yaml
-//   data/submissoes/{id}.yaml   — Submissao + embedded Eventos
 //
 // Binary attachments:
 //   attachments/prestacoes/{id}/{filename}
@@ -35,8 +34,6 @@ import type {
   Orientacao,
   Tarefa,
   Publicacao,
-  Submissao,
-  SubmissaoEvento,
   Anexo,
   Nucleacao,
   Internacionalizacao,
@@ -83,19 +80,6 @@ type StoredTarefa = {
 type StoredOrientacao = Omit<Orientacao, 'user_id' | 'projeto_original'> & {
   projeto_original?: StoredAnexo
   tarefas: StoredTarefa[]
-}
-
-type StoredEvento = {
-  id: string
-  tipo: string
-  descricao?: string
-  data?: string
-  revista?: string
-  created_at: string
-}
-
-type StoredSubmissao = Omit<Submissao, 'user_id'> & {
-  eventos: StoredEvento[]
 }
 
 // ─── SHA cache (avoids extra GET before every PUT) ────────────────────────
@@ -364,60 +348,6 @@ export async function savePublicacao(p: Publicacao): Promise<void> {
 
 export async function deletePublicacao(id: string): Promise<void> {
   await deleteYaml(`data/producao/${id}.yaml`, `Delete producao ${id}`)
-}
-
-// ─── SUBMISSÕES ───────────────────────────────────────────────────────────
-
-export async function loadSubmissoes(): Promise<{
-  submissoes: Submissao[]
-  eventos: SubmissaoEvento[]
-}> {
-  const files = await listYamls('data/submissoes')
-  const docs = await Promise.all(files.map((f) => readYaml<StoredSubmissao>(f)))
-
-  const submissoes: Submissao[] = []
-  const eventos: SubmissaoEvento[] = []
-
-  for (const doc of docs) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { eventos: _e, ...rest } = doc
-    submissoes.push({ ...rest, user_id: GH_USER })
-    for (const e of doc.eventos ?? []) {
-      eventos.push({ ...e, user_id: GH_USER, submissao_id: doc.id })
-    }
-  }
-
-  return { submissoes, eventos }
-}
-
-export async function saveSubmissaoFile(
-  submissao: Submissao,
-  allEventos: SubmissaoEvento[]
-): Promise<void> {
-  const myEventos = allEventos.filter((e) => e.submissao_id === submissao.id)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { user_id: _u, ...rest } = submissao
-  const doc: StoredSubmissao = {
-    ...rest,
-    updated_at: new Date().toISOString(),
-    eventos: myEventos.map((e) => ({
-      id: e.id,
-      tipo: e.tipo,
-      descricao: e.descricao,
-      data: e.data,
-      revista: e.revista,
-      created_at: e.created_at,
-    })),
-  }
-  await writeYaml(
-    `data/submissoes/${submissao.id}.yaml`,
-    doc,
-    `Update submissao ${submissao.id}`
-  )
-}
-
-export async function deleteSubmissaoFile(id: string): Promise<void> {
-  await deleteYaml(`data/submissoes/${id}.yaml`, `Delete submissao ${id}`)
 }
 
 // ─── NUCLEAÇÕES ───────────────────────────────────────────────────────────

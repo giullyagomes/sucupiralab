@@ -1,5 +1,5 @@
 import { useAuth } from '@/contexts/AuthContext'
-import type { Prestacao, Despesa, Discurso, ProjetoFinanciado, Orientacao, Tarefa, Submissao, SubmissaoEvento, Nucleacao, Internacionalizacao } from '@/types'
+import type { Prestacao, Despesa, Discurso, ProjetoFinanciado, Orientacao, Tarefa, Nucleacao, Internacionalizacao } from '@/types'
 
 const DEMO_PRESTACOES: Prestacao[] = [
   {
@@ -72,18 +72,6 @@ const DEMO_TAREFAS: Tarefa[] = [
   { id: '1', user_id: 'demo-user-id', orientacao_id: '1', descricao: 'Entregar rascunho do cap. 3', concluida: false, created_at: new Date().toISOString() },
   { id: '2', user_id: 'demo-user-id', orientacao_id: '1', descricao: 'Revisar referências bibliográficas', concluida: true, created_at: new Date().toISOString() },
   { id: '3', user_id: 'demo-user-id', orientacao_id: '2', descricao: 'Implementar protótipo do chatbot', concluida: false, created_at: new Date().toISOString() },
-]
-
-const DEMO_SUBMISSOES: Submissao[] = [
-  { id: '1', user_id: 'demo-user-id', titulo_provisorio: 'ML em EaD: uma revisão sistemática', autores: ['Ana Mendes', 'João Silva'], resumo: 'Este artigo apresenta uma revisão sistemática sobre o uso de ML em plataformas de ensino a distância.', coluna: 'em_preparacao', ultima_atividade: '2024-03-10', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: '2', user_id: 'demo-user-id', titulo_provisorio: 'Chatbots LLM no Ensino Superior', autores: ['Bruno Lima', 'João Silva'], coluna: 'submetido', ultima_atividade: '2024-02-15', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: '3', user_id: 'demo-user-id', titulo_provisorio: 'Análise de Sentimentos em Fóruns EaD', autores: ['Carla Nunes', 'João Silva'], coluna: 'em_revisao', ultima_atividade: '2024-01-20', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: '4', user_id: 'demo-user-id', titulo_provisorio: 'Predição de Evasão com Random Forests', autores: ['João Silva'], coluna: 'aceito', ultima_atividade: '2023-12-01', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-]
-
-const DEMO_EVENTOS: SubmissaoEvento[] = [
-  { id: '1', user_id: 'demo-user-id', submissao_id: '2', tipo: 'submissao', descricao: 'Artigo submetido', data: '2024-02-15', revista: 'Computers & Education', created_at: new Date().toISOString() },
-  { id: '2', user_id: 'demo-user-id', submissao_id: '3', tipo: 'revisao', descricao: 'Rodada de revisão iniciada', data: '2024-01-20', revista: 'RBCA', created_at: new Date().toISOString() },
 ]
 
 const DEMO_NUCLEACOES: Nucleacao[] = [
@@ -163,8 +151,6 @@ export function useDemoData() {
     projetos: DEMO_PROJETOS,
     orientacoes: DEMO_ORIENTACOES,
     tarefas: DEMO_TAREFAS,
-    submissoes: DEMO_SUBMISSOES,
-    eventos: DEMO_EVENTOS,
     nucleacoes: DEMO_NUCLEACOES,
     internacionalizacoes: DEMO_INTERNACIONALIZACOES,
   }

@@ -11,7 +11,6 @@ import { Orientacoes } from '@/pages/Orientacoes'
 import { Nucleacao } from '@/pages/Nucleacao'
 import { Producao } from '@/pages/Producao'
 import { Internacionalizacao } from '@/pages/Internacionalizacao'
-import { Submissoes } from '@/pages/Submissoes'
 import { NotFound } from '@/pages/NotFound'
 
 const queryClient = new QueryClient({
@@ -40,7 +39,6 @@ export default function App() {
               <Route path="/nucleacao" element={<Nucleacao />} />
               <Route path="/producao" element={<Producao />} />
               <Route path="/internacionalizacao" element={<Internacionalizacao />} />
-              <Route path="/submissoes" element={<Submissoes />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

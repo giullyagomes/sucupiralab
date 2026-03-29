@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { Receipt, MessageSquareText, FolderKanban, GraduationCap, BookOpen, Kanban, LogOut, Menu, X, FlaskConical, Network, Globe } from 'lucide-react'
+import { Receipt, MessageSquareText, FolderKanban, GraduationCap, BookOpen, LogOut, Menu, X, FlaskConical, Network, Globe } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { cn } from '@/lib/utils'
@@ -13,7 +13,6 @@ const navItems = [
   { to: '/internacionalizacao', label: 'Internacionalização', icon: Globe, color: 'text-indigo-600', bg: 'bg-indigo-50', activeBg: 'bg-indigo-100' },
   { to: '/discursos', label: 'Discursos Qualificados', icon: MessageSquareText, color: 'text-green-600', bg: 'bg-green-50', activeBg: 'bg-green-100' },
   { to: '/prestacoes', label: 'Prestações de Contas', icon: Receipt, color: 'text-blue-600', bg: 'bg-blue-50', activeBg: 'bg-blue-100' },
-  { to: '/submissoes', label: 'Submissões', icon: Kanban, color: 'text-purple-600', bg: 'bg-purple-50', activeBg: 'bg-purple-100' },
 ]
 
 function SidebarContent({ onClose }: { onClose?: () => void }) {
