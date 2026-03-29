@@ -1,6 +1,6 @@
 # :pencil2: SucupiraLAB
 
-[![DOI](https://zenodo.org/badge/1178336961.svg)](https://doi.org/10.5281/zenodo.19058247)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19305492.svg)](https://doi.org/10.5281/zenodo.19305492)
 
 O SucupiraLAB é uma aplicação web de gestão acadêmica voltada para pesquisadores, docentes e coordenadores de pós-graduação, e projetada para organizar e acompanhar as atividades de rotina de gestão de projetos de pesquisa exigidas, incluindo dados colhidos para alimentar a Plataforma Sucupira da CAPES. Por meio de uma interface moderna, o sistema permite gerenciar prestações de contas com despesas e documentos comprobatórios em anexo, discursos qualificados, importação e tabulação da produção científica, projetos financiados, orientações de alunos com controle de tarefas, nucleação de egressos e atividades de internacionalização — tudo com geração de relatórios em PDF e exportação para planilhas. Diferentemente de soluções tradicionais, o SucupiraLAB não utiliza banco de dados próprio: todos os dados são armazenados diretamente em um repositório GitHub privado do próprio usuário, garantindo total controle, privacidade e portabilidade das informações.
 
