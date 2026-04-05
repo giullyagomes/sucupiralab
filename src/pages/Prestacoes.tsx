@@ -316,8 +316,8 @@ export function Prestacoes() {
             <Receipt className="w-5 h-5 text-blue-600" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Prestações de Contas</h1>
-            <p className="text-sm text-gray-500">Gerenciamento de projetos financiados</p>
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white">Prestações de Contas</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Gerenciamento de projetos financiados</p>
           </div>
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -342,8 +342,8 @@ export function Prestacoes() {
                 <Receipt className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500">Prestações</p>
-                <p className="text-2xl font-bold text-gray-900">{prestacoes.length}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Prestações</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{prestacoes.length}</p>
               </div>
             </div>
           </CardContent>
@@ -355,8 +355,8 @@ export function Prestacoes() {
                 <DollarSign className="w-5 h-5 text-green-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500">Total Recursos</p>
-                <p className="text-2xl font-bold text-gray-900">{formatCurrency(totalRecursos)}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Total Recursos</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(totalRecursos)}</p>
               </div>
             </div>
           </CardContent>
@@ -368,8 +368,8 @@ export function Prestacoes() {
                 <DollarSign className="w-5 h-5 text-orange-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500">Total Despesas</p>
-                <p className="text-2xl font-bold text-gray-900">{formatCurrency(totalDespesas)}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Total Despesas</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(totalDespesas)}</p>
               </div>
             </div>
           </CardContent>
@@ -384,10 +384,10 @@ export function Prestacoes() {
         <CardContent className="p-0">
           {loading ? (
             <div className="flex justify-center py-16">
-              <div className="w-8 h-8 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin" />
+              <div className="w-8 h-8 border-4 border-gray-200 dark:border-gray-700 border-t-blue-500 rounded-full animate-spin" />
             </div>
           ) : prestacoes.length === 0 ? (
-            <div className="flex flex-col items-center py-12 text-gray-400">
+            <div className="flex flex-col items-center py-12 text-gray-400 dark:text-gray-500">
               <Receipt className="w-10 h-10 mb-2" />
               <p className="text-sm">Nenhuma prestação cadastrada</p>
               <Button variant="ghost" size="sm" className="mt-3" onClick={openNew}>Adicionar primeira prestação</Button>
@@ -399,11 +399,11 @@ export function Prestacoes() {
                 const myDespesas = despesas.filter(d => d.prestacao_id === p.id)
                 const editalAnexo = prestacaoAnexos.get(p.id)?.[0] ?? null
                 return (
-                  <div key={p.id} className="border-b border-gray-100 last:border-0">
-                    <div className="flex items-center gap-3 px-6 py-4 hover:bg-gray-50 cursor-pointer" onClick={() => setExpanded(isOpen ? null : p.id)}>
+                  <div key={p.id} className="border-b border-gray-100 dark:border-gray-700 last:border-0">
+                    <div className="flex items-center gap-3 px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer" onClick={() => setExpanded(isOpen ? null : p.id)}>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-medium text-gray-900 truncate">{p.titulo}</span>
+                          <span className="font-medium text-gray-900 dark:text-white truncate">{p.titulo}</span>
                           {p.agencia_fomento && <Badge variant="secondary">{p.agencia_fomento}</Badge>}
                           {editalAnexo && (
                             <a
@@ -419,7 +419,7 @@ export function Prestacoes() {
                             </a>
                           )}
                         </div>
-                        <div className="flex items-center gap-3 mt-1 text-xs text-gray-500 flex-wrap">
+                        <div className="flex items-center gap-3 mt-1 text-xs text-gray-500 dark:text-gray-400 flex-wrap">
                           {p.numero_processo && <span>Proc.: {p.numero_processo}</span>}
                           {p.vigencia_inicio && <span>{formatDate(p.vigencia_inicio)} – {formatDate(p.vigencia_fim ?? null)}</span>}
                           {p.total_recursos != null && <span className="font-medium text-green-700">{formatCurrency(p.total_recursos)}</span>}
@@ -433,14 +433,14 @@ export function Prestacoes() {
                         <Button variant="ghost" size="icon" onClick={e => { e.stopPropagation(); handleDelete(p.id) }} title="Excluir">
                           <Trash2 className="w-3.5 h-3.5 text-red-500" />
                         </Button>
-                        {isOpen ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
+                        {isOpen ? <ChevronUp className="w-4 h-4 text-gray-400 dark:text-gray-500" /> : <ChevronDown className="w-4 h-4 text-gray-400 dark:text-gray-500" />}
                       </div>
                     </div>
 
                     {isOpen && (
-                      <div className="px-6 pb-4 bg-gray-50">
+                      <div className="px-6 pb-4 bg-gray-50 dark:bg-gray-900">
                         <div className="flex items-center justify-between mb-3">
-                          <h3 className="text-sm font-semibold text-gray-700">Despesas</h3>
+                          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200">Despesas</h3>
                           <Button
                             variant="outline"
                             size="sm"
@@ -455,7 +455,7 @@ export function Prestacoes() {
                           </Button>
                         </div>
                         {myDespesas.length === 0 ? (
-                          <p className="text-sm text-gray-400 text-center py-4">Nenhuma despesa registrada</p>
+                          <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-4">Nenhuma despesa registrada</p>
                         ) : (
                           <Table>
                             <TableHeader>
@@ -489,7 +489,7 @@ export function Prestacoes() {
                                             <Badge variant="secondary" className="text-xs px-1.5 py-0">{dAnexos.length}</Badge>
                                           </button>
                                         ) : (
-                                          <span className="text-xs text-gray-400">—</span>
+                                          <span className="text-xs text-gray-400 dark:text-gray-500">—</span>
                                         )}
                                       </TableCell>
                                       <TableCell className="text-right font-medium text-green-700">{formatCurrency(d.valor)}</TableCell>
@@ -520,7 +520,7 @@ export function Prestacoes() {
                                 )
                               })}
                               <TableRow>
-                                <TableCell colSpan={5} className="font-semibold text-right text-gray-700">Total:</TableCell>
+                                <TableCell colSpan={5} className="font-semibold text-right text-gray-700 dark:text-gray-200">Total:</TableCell>
                                 <TableCell className="text-right font-bold text-green-700">{formatCurrency(myDespesas.reduce((s, d) => s + d.valor, 0))}</TableCell>
                               </TableRow>
                             </TableBody>
@@ -538,7 +538,7 @@ export function Prestacoes() {
 
       {/* Prestação form dialog */}
       <Dialog open={showForm} onOpenChange={open => { setShowForm(open); if (!open) { setPendingAnexo(null); setPendingFile(null) } }}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto dark:bg-gray-900 dark:border-gray-700">
           <DialogHeader>
             <DialogTitle>{editing ? 'Editar Prestação' : 'Nova Prestação de Contas'}</DialogTitle>
           </DialogHeader>
@@ -577,7 +577,7 @@ export function Prestacoes() {
             </div>
 
             {/* Edital attachment */}
-            <div className="sm:col-span-2 space-y-1.5 pt-2 border-t border-gray-100">
+            <div className="sm:col-span-2 space-y-1.5 pt-2 border-t border-gray-100 dark:border-gray-700">
               <Label>Documento do Edital</Label>
               {pendingAnexo ? (
                 <div className="flex items-center gap-3 p-3 rounded-lg bg-blue-50 border border-blue-100">
@@ -609,7 +609,7 @@ export function Prestacoes() {
                   >
                     <Paperclip className="w-4 h-4" /> Anexar Edital
                   </Button>
-                  <span className="text-xs text-gray-400">PDF, imagem, DOC — sem arquivo anexado</span>
+                  <span className="text-xs text-gray-400 dark:text-gray-500">PDF, imagem, DOC — sem arquivo anexado</span>
                 </div>
               )}
             </div>
@@ -623,7 +623,7 @@ export function Prestacoes() {
 
       {/* Despesa form dialog */}
       <Dialog open={showDespesaForm} onOpenChange={open => { setShowDespesaForm(open); if (!open) { setPendingDespesaAnexos([]); setPendingDespesaFiles([]) } }}>
-        <DialogContent>
+        <DialogContent className="dark:bg-gray-900 dark:border-gray-700">
           <DialogHeader>
             <DialogTitle>Nova Despesa</DialogTitle>
           </DialogHeader>
@@ -652,7 +652,7 @@ export function Prestacoes() {
             </div>
 
             {/* Despesa attachment section */}
-            <div className="space-y-2 pt-2 border-t border-gray-100">
+            <div className="space-y-2 pt-2 border-t border-gray-100 dark:border-gray-700">
               <Label>Anexar Documentos</Label>
               <div className="flex items-center gap-2">
                 <Button
@@ -663,7 +663,7 @@ export function Prestacoes() {
                 >
                   <Paperclip className="w-4 h-4" /> Adicionar Arquivos
                 </Button>
-                <span className="text-xs text-gray-400">PDF, imagem, DOC (múltiplos)</span>
+                <span className="text-xs text-gray-400 dark:text-gray-500">PDF, imagem, DOC (múltiplos)</span>
               </div>
               {pendingDespesaAnexos.length > 0 && (
                 <div className="space-y-1.5 mt-2">

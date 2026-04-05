@@ -68,33 +68,33 @@ export function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-4">
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-8">
 
           {/* Logo */}
           <div className="flex flex-col items-center mb-8">
             <div className="w-16 h-16 rounded-2xl bg-blue-600 flex items-center justify-center mb-4 shadow-lg shadow-blue-200">
               <FlaskConical className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">SucupiraLAB</h1>
-            <p className="text-sm text-gray-500 mt-1">App de gestão acadêmica · por coLAB/UFF</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">SucupiraLAB</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">App de gestão acadêmica · por coLAB/UFF</p>
           </div>
 
           {/* ── Scenario A: Firebase user logged in, needs GitHub config ── */}
           {user && !isDemoMode && !githubReady && (
             <div className="space-y-4">
-              <div className="flex items-center gap-2 p-3 bg-green-50 rounded-lg border border-green-200">
+              <div className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-700">
                 <UserCheck className="w-4 h-4 text-green-600 flex-shrink-0" />
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-green-800">
+                  <p className="text-sm font-semibold text-green-800 dark:text-green-300">
                     {user.displayName ?? user.email}
                   </p>
-                  <p className="text-xs text-green-600 truncate">{user.email}</p>
+                  <p className="text-xs text-green-600 dark:text-green-400 truncate">{user.email}</p>
                 </div>
               </div>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <p className="text-sm text-gray-500">Para salvar seus dados, conecte um repositório GitHub privado.</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Para salvar seus dados, conecte um repositório GitHub privado.</p>
                 <GitHubFields
                   token={token} setToken={setToken}
                   owner={owner} setOwner={setOwner}
@@ -119,7 +119,7 @@ export function Login() {
                 <>
                   {googleError && <ErrorBox message={googleError} />}
                   <Button
-                    className="w-full mb-4 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm"
+                    className="w-full mb-4 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 shadow-sm"
                     onClick={handleGoogleSignIn}
                     disabled={googleLoading}
                   >
@@ -133,9 +133,9 @@ export function Login() {
                   </Button>
                   <div className="relative my-4">
                     <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-gray-200" />
+                      <div className="w-full border-t border-gray-200 dark:border-gray-600" />
                     </div>
-                    <div className="relative flex justify-center text-xs text-gray-400 bg-white px-2">ou</div>
+                    <div className="relative flex justify-center text-xs text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-800 px-2">ou</div>
                   </div>
                 </>
               )}
@@ -143,8 +143,8 @@ export function Login() {
               {/* PAT form */}
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="flex items-center gap-2">
-                  <Github className="w-4 h-4 text-gray-600" />
-                  <span className="text-sm font-semibold text-gray-700">Configurar repositório GitHub</span>
+                  <Github className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                  <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">Configurar repositório GitHub</span>
                 </div>
                 <GitHubFields
                   token={token} setToken={setToken}
@@ -162,24 +162,24 @@ export function Login() {
 
               <div className="relative my-4">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-200" />
+                  <div className="w-full border-t border-gray-200 dark:border-gray-600" />
                 </div>
-                <div className="relative flex justify-center text-xs text-gray-400 bg-white px-2">ou</div>
+                <div className="relative flex justify-center text-xs text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-800 px-2">ou</div>
               </div>
 
               {/* Demo mode */}
-              <Button variant="outline" className="w-full" onClick={signInWithGoogle}>
+              <Button variant="outline" className="w-full dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700" onClick={signInWithGoogle}>
                 <LogIn className="w-4 h-4" />
                 Modo demonstração
               </Button>
-              <p className="text-xs text-gray-400 text-center mt-2">Dados fictícios, sem persistência.</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 text-center mt-2">Dados fictícios, sem persistência.</p>
             </>
           )}
         </div>
 
         {/* Setup hint */}
-        <div className="bg-white/80 border border-gray-200 rounded-xl p-4 text-xs text-gray-500 space-y-1">
-          <p className="font-semibold text-gray-700">Primeira configuração</p>
+        <div className="bg-white/80 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-xs text-gray-500 dark:text-gray-400 space-y-1">
+          <p className="font-semibold text-gray-700 dark:text-gray-200">Primeira configuração</p>
           <ol className="list-decimal list-inside space-y-1 leading-relaxed">
             {firebaseEnabled && (
               <li>Clique em <strong>Entrar com Google</strong> para se identificar.</li>
@@ -187,13 +187,13 @@ export function Login() {
             <li>Crie um repositório <strong>privado</strong> no GitHub para seus dados.</li>
             <li>
               Gere um PAT em <em>Settings → Developer settings → Personal access tokens</em>{' '}
-              com escopo <code className="bg-gray-100 px-1 rounded">repo</code>.
+              com escopo <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">repo</code>.
             </li>
             <li>Preencha as credenciais e clique em Conectar.</li>
           </ol>
         </div>
 
-        <p className="text-center text-xs text-gray-400">
+        <p className="text-center text-xs text-gray-400 dark:text-gray-500">
           SucupiraLAB · dados armazenados no seu GitHub
         </p>
       </div>
@@ -225,18 +225,18 @@ function GitHubFields({
             value={token}
             onChange={(e) => setToken(e.target.value)}
             placeholder="ghp_xxxxxxxxxxxxxxxx"
-            className="pl-9 pr-9 font-mono text-sm"
+            className="pl-9 pr-9 font-mono text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-500"
           />
           <button
             type="button"
             onClick={() => setShowToken(!showToken)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
           >
             {showToken ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           </button>
         </div>
-        <p className="text-xs text-gray-400">
-          Escopo mínimo: <code className="bg-gray-100 px-1 rounded">repo</code>
+        <p className="text-xs text-gray-400 dark:text-gray-500">
+          Escopo mínimo: <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">repo</code>
         </p>
       </div>
 
@@ -248,6 +248,7 @@ function GitHubFields({
             value={owner}
             onChange={(e) => setOwner(e.target.value)}
             placeholder="seu-usuario"
+            className="dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-500"
           />
         </div>
         <div className="space-y-1.5">
@@ -257,19 +258,21 @@ function GitHubFields({
             value={repo}
             onChange={(e) => setRepo(e.target.value)}
             placeholder="sucupira-dados"
+            className="dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-500"
           />
         </div>
       </div>
 
       <div className="space-y-1.5">
         <Label htmlFor="gh-branch">
-          Branch <span className="text-gray-400 font-normal">(padrão: main)</span>
+          Branch <span className="text-gray-400 dark:text-gray-500 font-normal">(padrão: main)</span>
         </Label>
         <Input
           id="gh-branch"
           value={branch}
           onChange={(e) => setBranch(e.target.value)}
           placeholder="main"
+          className="dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-500"
         />
       </div>
     </>
@@ -278,8 +281,8 @@ function GitHubFields({
 
 function ErrorBox({ message }: { message: string }) {
   return (
-    <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-      <p className="text-sm text-red-700">{message}</p>
+    <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-lg p-3">
+      <p className="text-sm text-red-700 dark:text-red-400">{message}</p>
     </div>
   )
 }

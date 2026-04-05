@@ -279,8 +279,8 @@ export function Internacionalizacao() {
             <Globe className="w-5 h-5 text-indigo-600" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Internacionalização</h1>
-            <p className="text-sm text-gray-500">Projetos e redes internacionais</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Internacionalização</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Projetos e redes internacionais</p>
           </div>
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -303,19 +303,19 @@ export function Internacionalizacao() {
       <div className="grid grid-cols-3 gap-4">
         <Card>
           <CardContent className="pt-4">
-            <p className="text-xs text-gray-500">Total</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Total</p>
             <p className="text-2xl font-bold text-indigo-600">{items.length}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-4">
-            <p className="text-xs text-gray-500">Em Andamento</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Em Andamento</p>
             <p className="text-2xl font-bold text-blue-600">{emAndamento}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-4">
-            <p className="text-xs text-gray-500">Concluídas</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Concluídas</p>
             <p className="text-2xl font-bold text-green-600">{concluidas}</p>
           </CardContent>
         </Card>
@@ -330,7 +330,7 @@ export function Internacionalizacao() {
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               filterSituacao === s
                 ? 'bg-indigo-100 text-indigo-700'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >
             {s}
@@ -340,9 +340,9 @@ export function Internacionalizacao() {
 
       {/* Card list */}
       {loading ? (
-        <div className="text-center text-gray-400 py-8">Carregando...</div>
+        <div className="text-center text-gray-400 dark:text-gray-500 py-8">Carregando...</div>
       ) : filtered.length === 0 ? (
-        <div className="text-center text-gray-400 py-8">
+        <div className="text-center text-gray-400 dark:text-gray-500 py-8">
           {items.length === 0
             ? 'Nenhum registro ainda. Clique em "Nova Entrada" para começar.'
             : 'Nenhum registro corresponde ao filtro selecionado.'}
@@ -355,15 +355,15 @@ export function Internacionalizacao() {
               <Card key={item.id} className="overflow-hidden">
                 {/* Card header */}
                 <div
-                  className="flex items-start justify-between px-5 py-4 cursor-pointer hover:bg-gray-50 transition-colors"
+                  className="flex items-start justify-between px-5 py-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                   onClick={() => setExpanded(isOpen ? null : item.id)}
                 >
                   <div className="flex-1 min-w-0 space-y-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-semibold text-gray-900 truncate">{item.titulo}</h3>
+                      <h3 className="font-semibold text-gray-900 dark:text-white truncate">{item.titulo}</h3>
                       <Badge className={SITUACAO_COLORS[item.situacao] ?? ''}>{item.situacao}</Badge>
                     </div>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       {item.ano_inicio}
                       {item.ano_encerramento ? ` – ${item.ano_encerramento}` : ''}
                       {(item.instituicoes ?? []).length > 0 && (
@@ -388,16 +388,16 @@ export function Internacionalizacao() {
                       <Trash2 className="w-3.5 h-3.5" />
                     </Button>
                     {isOpen ? (
-                      <ChevronUp className="w-4 h-4 text-gray-400" />
+                      <ChevronUp className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                     ) : (
-                      <ChevronDown className="w-4 h-4 text-gray-400" />
+                      <ChevronDown className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                     )}
                   </div>
                 </div>
 
                 {/* Expanded detail */}
                 {isOpen && (
-                  <div className="border-t px-5 py-4 space-y-4 bg-gray-50/50">
+                  <div className="border-t dark:border-gray-700 px-5 py-4 space-y-4 bg-gray-50/50 dark:bg-gray-800/50">
                     {/* Pills sections */}
                     {(item.programas_pos ?? []).length > 0 && (
                       <DetailRow label="Programas de PG">
@@ -423,7 +423,7 @@ export function Internacionalizacao() {
                       <DetailRow label="Membros da Equipe">
                         <div className="flex flex-wrap gap-1.5">
                           {(item.membros_equipe ?? []).map((m, i) => (
-                            <span key={i} className="bg-gray-100 text-gray-700 rounded-full px-2.5 py-0.5 text-xs font-medium">{m}</span>
+                            <span key={i} className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-full px-2.5 py-0.5 text-xs font-medium">{m}</span>
                           ))}
                         </div>
                       </DetailRow>
@@ -431,19 +431,19 @@ export function Internacionalizacao() {
 
                     {/* Text fields */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      {item.edital && <DetailRow label="Edital"><p className="text-sm text-gray-700">{item.edital}</p></DetailRow>}
-                      {item.financiamento && <DetailRow label="Financiamento"><p className="text-sm text-gray-700">{item.financiamento}</p></DetailRow>}
-                      {item.recursos && <DetailRow label="Recursos"><p className="text-sm text-gray-700">{item.recursos}</p></DetailRow>}
+                      {item.edital && <DetailRow label="Edital"><p className="text-sm text-gray-700 dark:text-gray-200">{item.edital}</p></DetailRow>}
+                      {item.financiamento && <DetailRow label="Financiamento"><p className="text-sm text-gray-700 dark:text-gray-200">{item.financiamento}</p></DetailRow>}
+                      {item.recursos && <DetailRow label="Recursos"><p className="text-sm text-gray-700 dark:text-gray-200">{item.recursos}</p></DetailRow>}
                     </div>
 
                     {item.descricao && (
                       <DetailRow label="Descrição">
-                        <p className="text-sm text-gray-700 whitespace-pre-line">{item.descricao}</p>
+                        <p className="text-sm text-gray-700 dark:text-gray-200 whitespace-pre-line">{item.descricao}</p>
                       </DetailRow>
                     )}
                     {item.resultados && (
                       <DetailRow label="Resultados Obtidos">
-                        <p className="text-sm text-gray-700 whitespace-pre-line">{item.resultados}</p>
+                        <p className="text-sm text-gray-700 dark:text-gray-200 whitespace-pre-line">{item.resultados}</p>
                       </DetailRow>
                     )}
                   </div>
@@ -456,7 +456,7 @@ export function Internacionalizacao() {
 
       {/* Form Dialog */}
       <Dialog open={showForm} onOpenChange={(o) => { if (!saving) setShowForm(o) }}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto dark:bg-gray-900 dark:border-gray-700">
           <DialogHeader>
             <DialogTitle>{editing ? 'Editar Registro' : 'Nova Entrada — Internacionalização'}</DialogTitle>
           </DialogHeader>
@@ -521,7 +521,7 @@ export function Internacionalizacao() {
 
             {/* Programas de PG */}
             <div className="col-span-2 space-y-1.5">
-              <Label>Programas de Pós-Graduação Envolvidos <span className="text-gray-400 font-normal">(opcional)</span></Label>
+              <Label>Programas de Pós-Graduação Envolvidos <span className="text-gray-400 dark:text-gray-500 font-normal">(opcional)</span></Label>
               <TagInput
                 values={form.programas_pos}
                 onChange={(vals) => setForm((f) => ({ ...f, programas_pos: vals }))}
@@ -532,7 +532,7 @@ export function Internacionalizacao() {
 
             {/* Instituições envolvidas */}
             <div className="col-span-2 space-y-1.5">
-              <Label>Instituições Envolvidas <span className="text-gray-400 font-normal">(opcional)</span></Label>
+              <Label>Instituições Envolvidas <span className="text-gray-400 dark:text-gray-500 font-normal">(opcional)</span></Label>
               <InstitutionSelector
                 mode="multi"
                 values={form.instituicoes}
@@ -544,7 +544,7 @@ export function Internacionalizacao() {
 
             {/* Membros da equipe */}
             <div className="col-span-2 space-y-1.5">
-              <Label>Membros da Equipe <span className="text-gray-400 font-normal">(opcional)</span></Label>
+              <Label>Membros da Equipe <span className="text-gray-400 dark:text-gray-500 font-normal">(opcional)</span></Label>
               <TagInput
                 values={form.membros_equipe}
                 onChange={(vals) => setForm((f) => ({ ...f, membros_equipe: vals }))}
@@ -555,7 +555,7 @@ export function Internacionalizacao() {
 
             {/* Edital */}
             <div className="space-y-1.5">
-              <Label htmlFor="int-edital">Edital <span className="text-gray-400 font-normal">(opcional)</span></Label>
+              <Label htmlFor="int-edital">Edital <span className="text-gray-400 dark:text-gray-500 font-normal">(opcional)</span></Label>
               <Input
                 id="int-edital"
                 value={form.edital}
@@ -566,7 +566,7 @@ export function Internacionalizacao() {
 
             {/* Financiamento */}
             <div className="space-y-1.5">
-              <Label htmlFor="int-financiamento">Financiamento <span className="text-gray-400 font-normal">(opcional)</span></Label>
+              <Label htmlFor="int-financiamento">Financiamento <span className="text-gray-400 dark:text-gray-500 font-normal">(opcional)</span></Label>
               <Input
                 id="int-financiamento"
                 value={form.financiamento}
@@ -577,7 +577,7 @@ export function Internacionalizacao() {
 
             {/* Recursos */}
             <div className="col-span-2 space-y-1.5">
-              <Label htmlFor="int-recursos">Recursos <span className="text-gray-400 font-normal">(opcional)</span></Label>
+              <Label htmlFor="int-recursos">Recursos <span className="text-gray-400 dark:text-gray-500 font-normal">(opcional)</span></Label>
               <Input
                 id="int-recursos"
                 value={form.recursos}
@@ -588,7 +588,7 @@ export function Internacionalizacao() {
 
             {/* Descrição */}
             <div className="col-span-2 space-y-1.5">
-              <Label htmlFor="int-descricao">Descrição <span className="text-gray-400 font-normal">(opcional)</span></Label>
+              <Label htmlFor="int-descricao">Descrição <span className="text-gray-400 dark:text-gray-500 font-normal">(opcional)</span></Label>
               <Textarea
                 id="int-descricao"
                 value={form.descricao}
@@ -600,7 +600,7 @@ export function Internacionalizacao() {
 
             {/* Resultados */}
             <div className="col-span-2 space-y-1.5">
-              <Label htmlFor="int-resultados">Resultados Obtidos <span className="text-gray-400 font-normal">(opcional)</span></Label>
+              <Label htmlFor="int-resultados">Resultados Obtidos <span className="text-gray-400 dark:text-gray-500 font-normal">(opcional)</span></Label>
               <Textarea
                 id="int-resultados"
                 value={form.resultados}
@@ -630,7 +630,7 @@ export function Internacionalizacao() {
 function DetailRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1">
-      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{label}</p>
+      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{label}</p>
       {children}
     </div>
   )

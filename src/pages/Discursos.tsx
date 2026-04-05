@@ -135,8 +135,8 @@ export function Discursos() {
             <MessageSquareText className="w-5 h-5 text-green-600" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Discursos Qualificados</h1>
-            <p className="text-sm text-gray-500">Registro de produções e impactos qualificados</p>
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white">Discursos Qualificados</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Registro de produções e impactos qualificados</p>
           </div>
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -156,14 +156,14 @@ export function Discursos() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-6 pb-4">
-            <p className="text-sm text-gray-500">Total</p>
-            <p className="text-3xl font-bold text-gray-900">{discursos.length}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Total</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{discursos.length}</p>
           </CardContent>
         </Card>
         {years.slice(0, 3).map(y => (
           <Card key={y}>
             <CardContent className="pt-6 pb-4">
-              <p className="text-sm text-gray-500">{y}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{y}</p>
               <p className="text-3xl font-bold text-green-700">{discursos.filter(d => d.ano === y).length}</p>
             </CardContent>
           </Card>
@@ -173,11 +173,11 @@ export function Discursos() {
       {/* Cards by year */}
       {loading ? (
         <div className="flex justify-center py-16">
-          <div className="w-8 h-8 border-4 border-gray-200 border-t-green-500 rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-gray-200 dark:border-gray-700 border-t-green-500 rounded-full animate-spin" />
         </div>
       ) : years.length === 0 ? (
         <Card>
-          <CardContent className="flex flex-col items-center py-12 text-gray-400">
+          <CardContent className="flex flex-col items-center py-12 text-gray-400 dark:text-gray-500">
             <MessageSquareText className="w-10 h-10 mb-2" />
             <p className="text-sm">Nenhum discurso cadastrado</p>
             <Button variant="ghost" size="sm" className="mt-3" onClick={openNew}>
@@ -190,7 +190,7 @@ export function Discursos() {
           <div key={year}>
             <div className="flex items-center gap-2 mb-3">
               <Badge className="bg-green-100 text-green-700 border-0">{year}</Badge>
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-gray-500 dark:text-gray-400">
                 {discursos.filter(d => d.ano === year).length} registro{discursos.filter(d => d.ano === year).length !== 1 ? 's' : ''}
               </span>
             </div>
@@ -202,9 +202,9 @@ export function Discursos() {
                     <CardContent className="pt-5 pb-4">
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-gray-900">{d.descricao}</p>
+                          <p className="font-medium text-gray-900 dark:text-white">{d.descricao}</p>
                           {d.justificativa && (
-                            <p className="text-sm text-gray-500 mt-1">{d.justificativa}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{d.justificativa}</p>
                           )}
                           {d.repercussoes_produtos && (
                             <div className="mt-2 p-2 bg-green-50 rounded-lg">
@@ -248,7 +248,7 @@ export function Discursos() {
       )}
 
       <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto dark:bg-gray-900 dark:border-gray-700">
           <DialogHeader>
             <DialogTitle>{editing ? 'Editar Discurso' : 'Novo Discurso Qualificado'}</DialogTitle>
           </DialogHeader>

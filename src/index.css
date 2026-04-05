@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
 @theme {
   --color-pastel-blue: #dbeafe;
   --color-pastel-blue-fg: #1d4ed8;
@@ -31,6 +33,11 @@ body {
   -webkit-font-smoothing: antialiased;
   background: #f8fafc;
   color: #1e293b;
+}
+
+.dark body {
+  background: #0f172a;
+  color: #f1f5f9;
 }
 
 .animate-fade-in { animation: var(--animate-fade-in); }

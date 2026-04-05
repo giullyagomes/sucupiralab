@@ -386,8 +386,8 @@ export function Orientacoes() {
             <GraduationCap className="w-5 h-5 text-pink-600" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Orientações</h1>
-            <p className="text-sm text-gray-500">Gestão de orientandos(as) e tarefas</p>
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white">Orientações</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Gestão de orientandos(as) e tarefas</p>
           </div>
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -407,14 +407,14 @@ export function Orientacoes() {
       <div className="grid grid-cols-2 sm:grid-cols-6 gap-3">
         <Card className="sm:col-span-1">
           <CardContent className="pt-5 pb-4">
-            <p className="text-sm text-gray-500">Total</p>
-            <p className="text-3xl font-bold text-gray-900">{orientacoes.length}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Total</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{orientacoes.length}</p>
           </CardContent>
         </Card>
         {CURSOS.map(c => (
           <Card key={c}>
             <CardContent className="pt-5 pb-4">
-              <p className="text-xs text-gray-500 leading-tight">{c}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 leading-tight">{c}</p>
               <p className="text-3xl font-bold text-pink-700">
                 {orientacoes.filter(o => o.curso === c).length}
               </p>
@@ -426,11 +426,11 @@ export function Orientacoes() {
       {/* ── List ── */}
       {loading ? (
         <div className="flex justify-center py-16">
-          <div className="w-8 h-8 border-4 border-gray-200 border-t-pink-500 rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-gray-200 dark:border-gray-700 border-t-pink-500 rounded-full animate-spin" />
         </div>
       ) : orientacoes.length === 0 ? (
         <Card>
-          <CardContent className="flex flex-col items-center py-12 text-gray-400">
+          <CardContent className="flex flex-col items-center py-12 text-gray-400 dark:text-gray-500">
             <GraduationCap className="w-10 h-10 mb-2" />
             <p className="text-sm">Nenhum(a) orientando(a) cadastrado(a)</p>
             <Button variant="ghost" size="sm" className="mt-3" onClick={openNew}>
@@ -445,7 +445,7 @@ export function Orientacoes() {
               <Badge className={`${CURSO_COLORS[curso] ?? 'bg-gray-100 text-gray-700'} border-0`}>
                 {curso}
               </Badge>
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-gray-500 dark:text-gray-400">
                 {orientacoes.filter(o => o.curso === curso).length}
               </span>
             </div>
@@ -478,7 +478,7 @@ export function Orientacoes() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-medium text-gray-900">{o.nome_orientando}</span>
+                          <span className="font-medium text-gray-900 dark:text-white">{o.nome_orientando}</span>
                           <Badge className={`${CURSO_COLORS[o.curso] ?? 'bg-gray-100 text-gray-700'} border-0 text-xs`}>
                             {o.curso}
                           </Badge>
@@ -489,9 +489,9 @@ export function Orientacoes() {
                           )}
                         </div>
                         {o.titulo_provisorio && (
-                          <p className="text-sm text-gray-500 truncate mt-0.5">{o.titulo_provisorio}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 truncate mt-0.5">{o.titulo_provisorio}</p>
                         )}
-                        <div className="flex items-center gap-3 text-xs text-gray-400 mt-0.5 flex-wrap">
+                        <div className="flex items-center gap-3 text-xs text-gray-400 dark:text-gray-500 mt-0.5 flex-wrap">
                           {o.ano_ingresso && <span>Ingresso: {o.ano_ingresso}</span>}
                           {o.previsao_conclusao && <span>Conclusão: {o.previsao_conclusao}</span>}
                           {reunioes.length > 0 && (
@@ -518,15 +518,15 @@ export function Orientacoes() {
                           <Trash2 className="w-3.5 h-3.5 text-red-500" />
                         </Button>
                         {isOpen
-                          ? <ChevronUp className="w-4 h-4 text-gray-400" />
-                          : <ChevronDown className="w-4 h-4 text-gray-400" />
+                          ? <ChevronUp className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                          : <ChevronDown className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                         }
                       </div>
                     </div>
 
                     {/* Expanded tabs */}
                     {isOpen && (
-                      <div className="border-t border-gray-100 px-6 py-4">
+                      <div className="border-t border-gray-100 dark:border-gray-700 px-6 py-4">
                         <Tabs defaultValue="tarefas">
                           <TabsList className="mb-4">
                             <TabsTrigger value="tarefas">Tarefas ({myTarefas.length})</TabsTrigger>
@@ -547,19 +547,19 @@ export function Orientacoes() {
                               {myTarefas.map(t => (
                                 <div
                                   key={t.id}
-                                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50"
+                                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
                                 >
                                   <Checkbox
                                     checked={t.concluida}
                                     onCheckedChange={() => toggleTarefa(t)}
                                   />
-                                  <span className={`text-sm ${t.concluida ? 'line-through text-gray-400' : 'text-gray-700'}`}>
+                                  <span className={`text-sm ${t.concluida ? 'line-through text-gray-400 dark:text-gray-500' : 'text-gray-700 dark:text-gray-200'}`}>
                                     {t.descricao}
                                   </span>
                                 </div>
                               ))}
                               {myTarefas.length === 0 && (
-                                <p className="text-sm text-gray-400 text-center py-2">
+                                <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-2">
                                   Nenhuma tarefa cadastrada
                                 </p>
                               )}
@@ -597,7 +597,7 @@ export function Orientacoes() {
                             {/* Entry list — timeline */}
                             <div className="space-y-0 mb-4">
                               {sortedReunioes.length === 0 && (
-                                <p className="text-sm text-gray-400 text-center py-4">
+                                <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-4">
                                   Nenhuma anotação registrada
                                 </p>
                               )}
@@ -607,27 +607,27 @@ export function Orientacoes() {
                                   <div className="flex flex-col items-center pt-1.5 flex-shrink-0">
                                     <div className="w-2 h-2 rounded-full bg-pink-400 flex-shrink-0" />
                                     {idx < sortedReunioes.length - 1 && (
-                                      <div className="w-px flex-1 bg-gray-200 my-1" style={{ minHeight: 24 }} />
+                                      <div className="w-px flex-1 bg-gray-200 dark:bg-gray-700 my-1" style={{ minHeight: 24 }} />
                                     )}
                                   </div>
                                   {/* Content */}
                                   <div className="flex-1 pb-4">
                                     {r.data ? (
                                       <div className="flex items-center gap-1.5 mb-1">
-                                        <CalendarDays className="w-3 h-3 text-gray-400" />
-                                        <span className="text-xs font-medium text-gray-500">{r.data}</span>
+                                        <CalendarDays className="w-3 h-3 text-gray-400 dark:text-gray-500" />
+                                        <span className="text-xs font-medium text-gray-500 dark:text-gray-400">{r.data}</span>
                                       </div>
                                     ) : (
-                                      <span className="text-xs text-gray-400 italic mb-1 block">
+                                      <span className="text-xs text-gray-400 dark:text-gray-500 italic mb-1 block">
                                         Sem data
                                       </span>
                                     )}
-                                    <p className="text-sm text-gray-700 whitespace-pre-wrap">{r.texto}</p>
+                                    <p className="text-sm text-gray-700 dark:text-gray-200 whitespace-pre-wrap">{r.texto}</p>
                                   </div>
                                   {/* Delete */}
                                   <button
                                     onClick={() => deleteReuniao(o.id, r.id)}
-                                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-gray-300 hover:text-red-500 flex-shrink-0 mt-0.5"
+                                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-gray-300 dark:text-gray-600 hover:text-red-500 flex-shrink-0 mt-0.5"
                                   >
                                     <X className="w-3.5 h-3.5" />
                                   </button>
@@ -637,11 +637,11 @@ export function Orientacoes() {
 
                             {/* Add entry form */}
                             <div
-                              className="border border-gray-200 rounded-lg p-3 space-y-2 bg-gray-50"
+                              className="border border-gray-200 dark:border-gray-600 rounded-lg p-3 space-y-2 bg-gray-50 dark:bg-gray-800"
                               onClick={e => e.stopPropagation()}
                             >
                               <div className="flex items-center gap-2">
-                                <CalendarDays className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                                <CalendarDays className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 flex-shrink-0" />
                                 <Input
                                   type="date"
                                   value={activeReuniaoId === o.id ? novaReuniaoData : ''}
@@ -651,7 +651,7 @@ export function Orientacoes() {
                                   }}
                                   className="h-7 text-xs w-40"
                                 />
-                                <span className="text-xs text-gray-400">data opcional</span>
+                                <span className="text-xs text-gray-400 dark:text-gray-500">data opcional</span>
                               </div>
                               <Textarea
                                 value={activeReuniaoId === o.id ? novaReuniaoTexto : ''}
@@ -687,10 +687,10 @@ export function Orientacoes() {
                                 {(o.leituras ?? []).map((l, i) => (
                                   <div
                                     key={i}
-                                    className="flex items-start gap-2 p-2 rounded-lg bg-gray-50"
+                                    className="flex items-start gap-2 p-2 rounded-lg bg-gray-50 dark:bg-gray-800"
                                   >
-                                    <BookOpen className="w-3.5 h-3.5 text-gray-400 mt-0.5 flex-shrink-0" />
-                                    <span className="text-sm text-gray-700">{l}</span>
+                                    <BookOpen className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 mt-0.5 flex-shrink-0" />
+                                    <span className="text-sm text-gray-700 dark:text-gray-200">{l}</span>
                                   </div>
                                 ))}
                               </div>
@@ -703,7 +703,7 @@ export function Orientacoes() {
                               <div className="space-y-4">
                                 {o.projeto_original && (
                                   <div>
-                                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">
+                                    <p className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">
                                       Projeto Original
                                     </p>
                                     <a
@@ -711,24 +711,24 @@ export function Orientacoes() {
                                       download={o.projeto_original.name}
                                       target="_blank"
                                       rel="noreferrer"
-                                      className="flex items-center gap-2 p-2.5 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors group"
+                                      className="flex items-center gap-2 p-2.5 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group"
                                     >
-                                      <Paperclip className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                                      <Paperclip className="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
                                       <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-medium text-gray-700 truncate">
+                                        <p className="text-sm font-medium text-gray-700 dark:text-gray-200 truncate">
                                           {o.projeto_original.name}
                                         </p>
-                                        <p className="text-xs text-gray-400">
+                                        <p className="text-xs text-gray-400 dark:text-gray-500">
                                           {formatFileSize(o.projeto_original.size)}
                                         </p>
                                       </div>
-                                      <Download className="w-3.5 h-3.5 text-gray-400 group-hover:text-gray-600" />
+                                      <Download className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300" />
                                     </a>
                                   </div>
                                 )}
                                 {hasLinks && (
                                   <div>
-                                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">
+                                    <p className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">
                                       Links de Documentos
                                     </p>
                                     <div className="space-y-1.5">
@@ -738,7 +738,7 @@ export function Orientacoes() {
                                           href={link}
                                           target="_blank"
                                           rel="noreferrer"
-                                          className="flex items-center gap-2 p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+                                          className="flex items-center gap-2 p-2 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                                         >
                                           <Link2 className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
                                           <span className="text-sm text-blue-600 truncate hover:underline">
@@ -765,7 +765,7 @@ export function Orientacoes() {
 
       {/* ── Form Dialog ── */}
       <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto dark:bg-gray-900 dark:border-gray-700">
           <DialogHeader>
             <DialogTitle>
               {editing ? 'Editar Orientação' : 'Nova Orientação'}
@@ -792,7 +792,7 @@ export function Orientacoes() {
                   onChange={e => setForm(f => ({
                     ...f, curso: e.target.value, exame_qualificacao: false,
                   }))}
-                  className="flex h-9 w-full rounded-md border border-gray-200 bg-white px-3 py-1 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  className="flex h-9 w-full rounded-md border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white px-3 py-1 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                 >
                   {CURSOS.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
@@ -840,23 +840,23 @@ export function Orientacoes() {
                     <Paperclip className="w-4 h-4" /> Anexar Arquivo
                   </Button>
                   {pendingProjetoOriginal && (
-                    <span className="flex items-center gap-1.5 text-sm text-gray-700 bg-gray-100 px-2.5 py-1 rounded-lg">
-                      <FileText className="w-3.5 h-3.5 text-gray-500" />
+                    <span className="flex items-center gap-1.5 text-sm text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 px-2.5 py-1 rounded-lg">
+                      <FileText className="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
                       {pendingProjetoOriginal.name}
-                      <span className="text-xs text-gray-400 ml-0.5">
+                      <span className="text-xs text-gray-400 dark:text-gray-500 ml-0.5">
                         ({formatFileSize(pendingProjetoOriginal.size)})
                       </span>
                       <button
                         type="button"
                         onClick={() => setPendingProjetoOriginal(null)}
-                        className="ml-1 text-gray-400 hover:text-red-500"
+                        className="ml-1 text-gray-400 dark:text-gray-500 hover:text-red-500"
                       >
                         <X className="w-3 h-3" />
                       </button>
                     </span>
                   )}
                   {!pendingProjetoOriginal && editing?.projeto_original && (
-                    <span className="text-sm text-gray-500 italic">
+                    <span className="text-sm text-gray-500 dark:text-gray-400 italic">
                       Atual: {editing.projeto_original.name}
                     </span>
                   )}

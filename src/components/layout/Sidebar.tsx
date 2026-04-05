@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { Receipt, MessageSquareText, FolderKanban, GraduationCap, BookOpen, LogOut, Menu, X, FlaskConical, Network, Globe } from 'lucide-react'
+import { Receipt, MessageSquareText, FolderKanban, GraduationCap, BookOpen, LogOut, Menu, X, FlaskConical, Network, Globe, Sun, Moon } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import { useTheme } from '@/contexts/ThemeContext'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { cn } from '@/lib/utils'
 
@@ -17,6 +18,7 @@ const navItems = [
 
 function SidebarContent({ onClose }: { onClose?: () => void }) {
   const { user, signOut, isDemoMode } = useAuth()
+  const { theme, toggleTheme } = useTheme()
   const navigate = useNavigate()
 
   const displayName = user?.displayName ?? user?.email ?? 'Usuário'
@@ -30,20 +32,20 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
   }
 
   return (
-    <div className="flex flex-col h-full bg-white border-r border-gray-200">
+    <div className="flex flex-col h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-5 border-b border-gray-100">
+      <div className="flex items-center justify-between px-5 py-5 border-b border-gray-100 dark:border-gray-700">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
             <FlaskConical className="w-4 h-4 text-white" />
           </div>
           <div>
-            <div className="text-sm font-bold text-gray-900">SucupiraLAB</div>
-            <div className="text-xs text-gray-400">coLAB/UFF</div>
+            <div className="text-sm font-bold text-gray-900 dark:text-white">SucupiraLAB</div>
+            <div className="text-xs text-gray-400 dark:text-gray-500">coLAB/UFF</div>
           </div>
         </div>
         {onClose && (
-          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded-md text-gray-500">
+          <button onClick={onClose} className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md text-gray-500 dark:text-gray-400">
             <X className="w-4 h-4" />
           </button>
         )}
@@ -51,9 +53,9 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
 
       {/* Demo badge */}
       {isDemoMode && (
-        <div className="mx-4 mt-3 px-3 py-1.5 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <p className="text-xs text-yellow-700 font-medium">Modo Demonstração</p>
-          <p className="text-xs text-yellow-600">Configure o GitHub para persistência</p>
+        <div className="mx-4 mt-3 px-3 py-1.5 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-lg">
+          <p className="text-xs text-yellow-700 dark:text-yellow-400 font-medium">Modo Demonstração</p>
+          <p className="text-xs text-yellow-600 dark:text-yellow-500">Configure o GitHub para persistência</p>
         </div>
       )}
 
@@ -69,14 +71,14 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
                 isActive
                   ? cn(activeBg, color)
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100'
               )
             }
           >
             {({ isActive }) => (
               <>
-                <div className={cn('w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0', isActive ? 'bg-white/70' : 'bg-gray-100')}>
-                  <Icon className={cn('w-4 h-4', isActive ? color : 'text-gray-500')} />
+                <div className={cn('w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0', isActive ? 'bg-white/70' : 'bg-gray-100 dark:bg-gray-800')}>
+                  <Icon className={cn('w-4 h-4', isActive ? color : 'text-gray-500 dark:text-gray-400')} />
                 </div>
                 <span className="truncate">{label}</span>
               </>
@@ -86,20 +88,27 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       </nav>
 
       {/* User area */}
-      <div className="px-3 py-3 border-t border-gray-100">
+      <div className="px-3 py-3 border-t border-gray-100 dark:border-gray-700">
         <div className="flex items-center gap-3 px-2 py-2 rounded-lg">
           <Avatar className="h-8 w-8 flex-shrink-0">
             {avatarUrl && <AvatarImage src={avatarUrl} alt={displayName} />}
             <AvatarFallback className="text-xs">{initials}</AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 truncate">{displayName}</p>
-            <p className="text-xs text-gray-400 truncate">{email}</p>
+            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{displayName}</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500 truncate">{email}</p>
           </div>
+          <button
+            onClick={toggleTheme}
+            title={theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
+            className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+          >
+            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
           <button
             onClick={handleLogout}
             title="Sair"
-            className="p-1.5 hover:bg-gray-100 rounded-md text-gray-400 hover:text-gray-600 transition-colors"
+            className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
           >
             <LogOut className="w-4 h-4" />
           </button>
@@ -121,10 +130,10 @@ export function Sidebar() {
 
       {/* Mobile hamburger */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white border border-gray-200 rounded-lg shadow-sm"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm text-gray-600 dark:text-gray-300"
         onClick={() => setMobileOpen(true)}
       >
-        <Menu className="w-5 h-5 text-gray-600" />
+        <Menu className="w-5 h-5" />
       </button>
 
       {/* Mobile drawer */}

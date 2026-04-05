@@ -293,8 +293,8 @@ export function Producao() {
             <BookOpen className="w-5 h-5 text-teal-600" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Produção Científica</h1>
-            <p className="text-sm text-gray-500">Publicações, capítulos, livros e congressos</p>
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white">Produção Científica</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Publicações, capítulos, livros e congressos</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -318,25 +318,25 @@ export function Producao() {
           <CardContent className="pt-5 pb-4">
             <div className="flex items-center gap-2 mb-1">
               <BookOpen className="w-4 h-4 text-teal-600" />
-              <p className="text-xs text-gray-500">Total Publicações</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Total Publicações</p>
             </div>
-            <p className="text-3xl font-bold text-gray-900">{producao.length}</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{producao.length}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-5 pb-4">
             <div className="flex items-center gap-2 mb-1">
               <FileText className="w-4 h-4 text-blue-600" />
-              <p className="text-xs text-gray-500">Artigos</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Artigos</p>
             </div>
-            <p className="text-3xl font-bold text-gray-900">{artigos.length}</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{artigos.length}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-5 pb-4">
             <div className="flex items-center gap-2 mb-1">
               <Award className="w-4 h-4 text-green-600" />
-              <p className="text-xs text-gray-500">A1/A2 Qualis</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">A1/A2 Qualis</p>
             </div>
             <p className="text-3xl font-bold text-green-700">{a1a2}</p>
           </CardContent>
@@ -345,9 +345,9 @@ export function Producao() {
           <CardContent className="pt-5 pb-4">
             <div className="flex items-center gap-2 mb-1">
               <BarChart3 className="w-4 h-4 text-purple-600" />
-              <p className="text-xs text-gray-500">Total Citações</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Total Citações</p>
             </div>
-            <p className="text-3xl font-bold text-gray-900">{totalCitacoes}</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{totalCitacoes}</p>
           </CardContent>
         </Card>
       </div>
@@ -382,12 +382,12 @@ export function Producao() {
       {/* Filter + list */}
       {loading ? (
         <div className="flex justify-center py-16">
-          <div className="w-8 h-8 border-4 border-gray-200 border-t-teal-500 rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-gray-200 dark:border-gray-700 border-t-teal-500 rounded-full animate-spin" />
         </div>
       ) : null}
       <div className={`space-y-4 ${loading ? 'hidden' : ''}`}>
         <div className="relative">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
           <Input
             value={search}
             onChange={e => setSearch(e.target.value)}
@@ -413,7 +413,7 @@ export function Producao() {
           {['todos', ...Object.keys(TIPO_CONFIG)].map(tab => (
             <TabsContent key={tab} value={tab} className="space-y-3 mt-4">
               {filtered.length === 0 ? (
-                <div className="text-center py-8 text-gray-400">
+                <div className="text-center py-8 text-gray-400 dark:text-gray-500">
                   <BookOpen className="w-8 h-8 mx-auto mb-2" />
                   <p className="text-sm">Nenhuma publicação encontrada</p>
                 </div>
@@ -430,9 +430,9 @@ export function Producao() {
                             <Icon className={`w-4 h-4 ${cfg.text}`} />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium text-gray-900 leading-snug">{p.titulo}</p>
-                            <p className="text-sm text-gray-500 mt-0.5">{p.autores.join(', ')}</p>
-                            {p.venue && <p className="text-sm text-gray-500 italic mt-0.5">{p.venue}</p>}
+                            <p className="font-medium text-gray-900 dark:text-white leading-snug">{p.titulo}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{p.autores.join(', ')}</p>
+                            {p.venue && <p className="text-sm text-gray-500 dark:text-gray-400 italic mt-0.5">{p.venue}</p>}
                             <div className="flex items-center gap-2 mt-2 flex-wrap">
                               <Badge variant="outline" className="text-xs">{p.ano}</Badge>
                               <Badge className={`${cfg.bg} ${cfg.text} border-0 text-xs`}>{cfg.label}</Badge>
@@ -442,7 +442,7 @@ export function Producao() {
                                 </Badge>
                               )}
                               {p.citacoes != null && p.citacoes > 0 && (
-                                <span className="text-xs text-gray-400">
+                                <span className="text-xs text-gray-400 dark:text-gray-500">
                                   {p.citacoes} citação{p.citacoes !== 1 ? 'ões' : ''}
                                 </span>
                               )}
@@ -471,28 +471,28 @@ export function Producao() {
 
       {/* Import preview dialog */}
       <Dialog open={importPreview !== null} onOpenChange={open => { if (!open) setImportPreview(null) }}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto dark:bg-gray-900 dark:border-gray-700">
           <DialogHeader>
             <DialogTitle>Importação do Lattes</DialogTitle>
           </DialogHeader>
           <div className="py-2 space-y-3">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
               Encontradas <span className="font-semibold">{importPreview?.length ?? 0}</span> publicações. Deseja importar?
             </p>
             <div className="space-y-2">
               {importPreview?.slice(0, 10).map(item => {
                 const cfg = TIPO_CONFIG[item.tipo]
                 return (
-                  <div key={item.id} className="flex items-start gap-2 p-2 rounded-lg bg-gray-50 border border-gray-100">
+                  <div key={item.id} className="flex items-start gap-2 p-2 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
                     <Badge className={`${cfg?.bg ?? 'bg-gray-100'} ${cfg?.text ?? 'text-gray-700'} border-0 text-xs flex-shrink-0 mt-0.5`}>
                       {item.tipo}
                     </Badge>
-                    <p className="text-sm text-gray-800 leading-snug">{item.titulo}</p>
+                    <p className="text-sm text-gray-800 dark:text-white leading-snug">{item.titulo}</p>
                   </div>
                 )
               })}
               {(importPreview?.length ?? 0) > 10 && (
-                <p className="text-xs text-gray-400 text-center">
+                <p className="text-xs text-gray-400 dark:text-gray-500 text-center">
                   ...e mais {(importPreview?.length ?? 0) - 10} publicações
                 </p>
               )}

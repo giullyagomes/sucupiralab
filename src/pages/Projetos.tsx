@@ -175,8 +175,8 @@ export function Projetos() {
             <FolderKanban className="w-5 h-5 text-yellow-600" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Projetos Financiados</h1>
-            <p className="text-sm text-gray-500">Catálogo de projetos com financiamento externo</p>
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white">Projetos Financiados</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Catálogo de projetos com financiamento externo</p>
           </div>
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -191,19 +191,19 @@ export function Projetos() {
         <Card><CardContent className="pt-6">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-yellow-100 flex items-center justify-center"><FolderKanban className="w-5 h-5 text-yellow-600" /></div>
-            <div><p className="text-sm text-gray-500">Projetos</p><p className="text-2xl font-bold text-gray-900">{projetos.length}</p></div>
+            <div><p className="text-sm text-gray-500 dark:text-gray-400">Projetos</p><p className="text-2xl font-bold text-gray-900 dark:text-white">{projetos.length}</p></div>
           </div>
         </CardContent></Card>
         <Card><CardContent className="pt-6">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-green-100 flex items-center justify-center"><DollarSign className="w-5 h-5 text-green-600" /></div>
-            <div><p className="text-sm text-gray-500">Total Aportes</p><p className="text-2xl font-bold text-gray-900">{formatCurrency(totalAportes)}</p></div>
+            <div><p className="text-sm text-gray-500 dark:text-gray-400">Total Aportes</p><p className="text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(totalAportes)}</p></div>
           </div>
         </CardContent></Card>
         <Card><CardContent className="pt-6">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center"><Users className="w-5 h-5 text-blue-600" /></div>
-            <div><p className="text-sm text-gray-500">Docentes Envolvidos</p><p className="text-2xl font-bold text-gray-900">{new Set(projetos.flatMap(p => p.docentes_envolvidos ?? [])).size}</p></div>
+            <div><p className="text-sm text-gray-500 dark:text-gray-400">Docentes Envolvidos</p><p className="text-2xl font-bold text-gray-900 dark:text-white">{new Set(projetos.flatMap(p => p.docentes_envolvidos ?? [])).size}</p></div>
           </div>
         </CardContent></Card>
       </div>
@@ -211,10 +211,10 @@ export function Projetos() {
       {/* Project cards */}
       {loading ? (
         <div className="flex justify-center py-16">
-          <div className="w-8 h-8 border-4 border-gray-200 border-t-yellow-500 rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-gray-200 dark:border-gray-700 border-t-yellow-500 rounded-full animate-spin" />
         </div>
       ) : projetos.length === 0 ? (
-        <Card><CardContent className="flex flex-col items-center py-12 text-gray-400">
+        <Card><CardContent className="flex flex-col items-center py-12 text-gray-400 dark:text-gray-500">
           <FolderKanban className="w-10 h-10 mb-2" />
           <p className="text-sm">Nenhum projeto cadastrado</p>
           <Button variant="ghost" size="sm" className="mt-3" onClick={openNew}>Adicionar primeiro projeto</Button>
@@ -233,31 +233,31 @@ export function Projetos() {
                 </div>
                 {p.financiadores && <Badge className="bg-yellow-100 text-yellow-700 border-0 w-fit">{p.financiadores}</Badge>}
                 {p.resumo_projeto && (
-                  <p className="text-sm text-gray-500 mt-1 leading-relaxed">{p.resumo_projeto}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">{p.resumo_projeto}</p>
                 )}
               </CardHeader>
               <CardContent className="pt-0 space-y-2">
                 {p.instituicoes_envolvidas && (
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <span className="text-xs font-medium text-gray-400 w-20">Instituições</span>
+                  <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                    <span className="text-xs font-medium text-gray-400 dark:text-gray-500 w-20">Instituições</span>
                     {p.instituicoes_envolvidas}
                   </div>
                 )}
                 {p.numero_processo && (
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <span className="text-xs font-medium text-gray-400 w-20">Processo</span>
+                  <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                    <span className="text-xs font-medium text-gray-400 dark:text-gray-500 w-20">Processo</span>
                     {p.numero_processo}
                   </div>
                 )}
                 {p.chamadas_editais && (
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <span className="text-xs font-medium text-gray-400 w-20">Edital</span>
+                  <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                    <span className="text-xs font-medium text-gray-400 dark:text-gray-500 w-20">Edital</span>
                     {p.chamadas_editais}
                   </div>
                 )}
                 {(p.vigencia_inicio || p.vigencia_fim) && (
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                  <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                    <Calendar className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
                     <span>{formatDate(p.vigencia_inicio ?? null)} — {formatDate(p.vigencia_fim ?? null)}</span>
                   </div>
                 )}
@@ -269,7 +269,7 @@ export function Projetos() {
                 )}
                 {(p.docentes_envolvidos ?? []).length > 0 && (
                   <div className="pt-1">
-                    <p className="text-xs font-medium text-gray-400 mb-1.5">Docentes Envolvidos</p>
+                    <p className="text-xs font-medium text-gray-400 dark:text-gray-500 mb-1.5">Docentes Envolvidos</p>
                     <div className="flex flex-wrap gap-1.5">
                       {(p.docentes_envolvidos ?? []).map(d => (
                         <Badge key={d} variant="outline" className="text-xs">{d}</Badge>
@@ -284,7 +284,7 @@ export function Projetos() {
       )}
 
       <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto dark:bg-gray-900 dark:border-gray-700">
           <DialogHeader>
             <DialogTitle>{editing ? 'Editar Projeto' : 'Novo Projeto Financiado'}</DialogTitle>
           </DialogHeader>

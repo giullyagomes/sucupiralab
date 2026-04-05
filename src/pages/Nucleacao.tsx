@@ -269,8 +269,8 @@ export function Nucleacao() {
             <Network className="w-5 h-5 text-orange-600" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Nucleação</h1>
-            <p className="text-sm text-gray-500">Inserção profissional de egressos</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Nucleação</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Inserção profissional de egressos</p>
           </div>
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -293,15 +293,15 @@ export function Nucleacao() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-4">
-            <p className="text-xs text-gray-500">Total</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Total</p>
             <p className="text-2xl font-bold text-orange-600">{nucleacoes.length}</p>
           </CardContent>
         </Card>
         {CURSOS.map((c) => (
           <Card key={c}>
             <CardContent className="pt-4">
-              <p className="text-xs text-gray-500">{c}</p>
-              <p className="text-2xl font-bold text-gray-700">
+              <p className="text-xs text-gray-500 dark:text-gray-400">{c}</p>
+              <p className="text-2xl font-bold text-gray-700 dark:text-gray-200">
                 {nucleacoes.filter((n) => n.curso === c).length}
               </p>
             </CardContent>
@@ -311,7 +311,7 @@ export function Nucleacao() {
 
       {/* Filters */}
       <div className="flex flex-wrap gap-2 items-center">
-        <Filter className="w-4 h-4 text-gray-400" />
+        <Filter className="w-4 h-4 text-gray-400 dark:text-gray-500" />
         <div className="flex gap-1 flex-wrap">
           {['Todos', ...CURSOS].map((c) => (
             <button
@@ -320,14 +320,14 @@ export function Nucleacao() {
               className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                 filterCurso === c
                   ? 'bg-orange-100 text-orange-700'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
               }`}
             >
               {c}
             </button>
           ))}
         </div>
-        <div className="w-px h-4 bg-gray-200" />
+        <div className="w-px h-4 bg-gray-200 dark:bg-gray-700" />
         <div className="flex gap-1 flex-wrap">
           {['Todos', ...TIPOS_INSERCAO].map((t) => (
             <button
@@ -336,7 +336,7 @@ export function Nucleacao() {
               className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                 filterTipo === t
                   ? 'bg-orange-100 text-orange-700'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
               }`}
             >
               {t}
@@ -349,9 +349,9 @@ export function Nucleacao() {
       <Card>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-8 text-center text-gray-400">Carregando...</div>
+            <div className="p-8 text-center text-gray-400 dark:text-gray-500">Carregando...</div>
           ) : filtered.length === 0 ? (
-            <div className="p-8 text-center text-gray-400">
+            <div className="p-8 text-center text-gray-400 dark:text-gray-500">
               {nucleacoes.length === 0
                 ? 'Nenhum registro ainda. Clique em "Novo Registro" para começar.'
                 : 'Nenhum registro corresponde aos filtros selecionados.'}
@@ -360,29 +360,29 @@ export function Nucleacao() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b bg-gray-50">
-                    <th className="text-left px-4 py-3 font-medium text-gray-600">Nome do Egresso</th>
-                    <th className="text-left px-4 py-3 font-medium text-gray-600">Curso</th>
-                    <th className="text-left px-4 py-3 font-medium text-gray-600">Ano Conclusão</th>
-                    <th className="text-left px-4 py-3 font-medium text-gray-600">Ano Nucleação</th>
-                    <th className="text-left px-4 py-3 font-medium text-gray-600">Tipo Inserção</th>
-                    <th className="text-left px-4 py-3 font-medium text-gray-600">Instituição / Agência</th>
+                  <tr className="border-b bg-gray-50 dark:bg-gray-700">
+                    <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-200">Nome do Egresso</th>
+                    <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-200">Curso</th>
+                    <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-200">Ano Conclusão</th>
+                    <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-200">Ano Nucleação</th>
+                    <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-200">Tipo Inserção</th>
+                    <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-200">Instituição / Agência</th>
                     <th className="px-4 py-3" />
                   </tr>
                 </thead>
                 <tbody>
                   {filtered.map((n) => (
-                    <tr key={n.id} className="border-b last:border-0 hover:bg-gray-50 transition-colors">
-                      <td className="px-4 py-3 font-medium text-gray-900">{n.nome_egresso}</td>
+                    <tr key={n.id} className="border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                      <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{n.nome_egresso}</td>
                       <td className="px-4 py-3">
                         <Badge className={CURSO_COLORS[n.curso] ?? ''}>{n.curso}</Badge>
                       </td>
-                      <td className="px-4 py-3 text-gray-600">{n.ano_conclusao}</td>
-                      <td className="px-4 py-3 text-gray-600">{n.ano_nucleacao}</td>
+                      <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{n.ano_conclusao}</td>
+                      <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{n.ano_nucleacao}</td>
                       <td className="px-4 py-3">
                         <Badge className={TIPO_COLORS[n.tipo_insercao] ?? ''}>{n.tipo_insercao}</Badge>
                       </td>
-                      <td className="px-4 py-3 text-gray-600 max-w-[200px] truncate">
+                      <td className="px-4 py-3 text-gray-600 dark:text-gray-300 max-w-[200px] truncate">
                         {n.tipo_insercao === 'Bolsa'
                           ? n.agencia_fomento ?? '—'
                           : n.nome_instituicao ?? '—'}
@@ -413,7 +413,7 @@ export function Nucleacao() {
 
       {/* Form Dialog */}
       <Dialog open={showForm} onOpenChange={(o) => { if (!saving) setShowForm(o) }}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto dark:bg-gray-900 dark:border-gray-700">
           <DialogHeader>
             <DialogTitle>{editing ? 'Editar Registro' : 'Novo Registro de Nucleação'}</DialogTitle>
           </DialogHeader>
