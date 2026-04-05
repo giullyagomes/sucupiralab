@@ -125,13 +125,13 @@ export function InstitutionSelector(props: InstitutionSelectorProps) {
 
       {/* Dropdown */}
       {open && query.length > 0 && (
-        <div className="absolute z-50 mt-1 w-full rounded-md border border-gray-200 bg-white shadow-lg max-h-60 overflow-y-auto">
+        <div className="absolute z-50 mt-1 w-full rounded-md border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 shadow-lg max-h-60 overflow-y-auto">
           {filtered.map((inst) => (
             <button
               key={inst}
               type="button"
               onClick={() => selectItem(inst)}
-              className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 flex items-center gap-2"
+              className="w-full text-left px-3 py-2 text-sm text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"
             >
               <Building2 className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
               <span className="truncate">{inst}</span>
@@ -141,7 +141,7 @@ export function InstitutionSelector(props: InstitutionSelectorProps) {
             <button
               type="button"
               onClick={() => selectItem(query.trim())}
-              className="w-full text-left px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 font-medium border-t border-gray-100"
+              className="w-full text-left px-3 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 font-medium border-t border-gray-100 dark:border-gray-700"
             >
               + Adicionar "{query.trim()}"
             </button>
