@@ -120,6 +120,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
 
 export function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const { theme, toggleTheme } = useTheme()
 
   return (
     <>
@@ -130,6 +131,12 @@ export function Sidebar() {
 
       {/* Mobile top navbar */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 h-14 flex items-center justify-between px-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
             <FlaskConical className="w-3.5 h-3.5 text-white" />
@@ -137,10 +144,11 @@ export function Sidebar() {
           <span className="text-sm font-bold text-gray-900 dark:text-white">SucupiraLAB</span>
         </div>
         <button
-          onClick={() => setMobileOpen(true)}
+          onClick={toggleTheme}
+          title={theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
           className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         >
-          <Menu className="w-5 h-5" />
+          {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
         </button>
       </div>
 
