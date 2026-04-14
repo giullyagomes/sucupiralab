@@ -1,53 +1,67 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiClient } from '../service/client';
-import type { ProjetoResponseDTO, ProjetoRequestDTO } from '../types'; // crie tipos baseados nos DTOs
+import { apiClient } from '../api/client';
+import type { ProjetoRequestDTO, ProjetoResponseDTO } from '../types/projeto';
 
-// Tipos (crie em src/types/projeto.ts ou use os do backend via OpenAPI no futuro)
-export interface ProjetoResponseDTO { 
-    id: number;
-    titulo: string;
-    edital: string;
-    agenciaFomento: string;
-    valorConcedido: number;
-    dataInicio: Date; 
-    dataFim: Date; 
-    coordenador: string;
-    equipe: string[];
-    descricao: string;
-    linkLattesOuGitHub: string;
-    status: 'Em Andamento' | 'Concluído' | 'Cancelado';
-    createdAt: Date;
-    updatedAt: Date;
- }
-export interface ProjetoRequestDTO { 
-    titulo: string;
-    edital: string;
-    agenciaFomento: string;
-    valorConcedido: number;
-    dataInicio: Date; 
-    dataFim: Date; 
-    coordenador: string;
-    equipe: string[];
-    descricao: string;
-    linkLattesOuGitHub: string;
- }
-
+// Hook para listar todos os projetos (substitui o fetch antigo do GitHub)
 export const useProjetos = () => {
   return useQuery({
     queryKey: ['projetos'],
     queryFn: () => apiClient.get<ProjetoResponseDTO[]>('/projetos'),
+    staleTime: 1000 * 60 * 5, // 5 minutos
   });
 };
 
+// Hook para buscar um projeto específico por ID
+export const useProjetoById = (id: string | undefined) => {
+  return useQuery({
+    queryKey: ['projetos', id],
+    queryFn: () => apiClient.get<ProjetoResponseDTO>(`/projetos/${id}`),
+    enabled: !!id,
+  });
+};
+
+// Hook para criar um novo projeto
 export const useCriarProjeto = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (dto: ProjetoRequestDTO) => apiClient.post<ProjetoResponseDTO>('/projetos', dto),
+    mutationFn: (novoProjeto: ProjetoRequestDTO) =>
+      apiClient.post<ProjetoResponseDTO>('/projetos', novoProjeto),
+
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['projetos'] }); // Atualiza lista automaticamente
+      // Depois de criar, atualiza automaticamente a lista de projetos
+      queryClient.invalidateQueries({ queryKey: ['projetos'] });
+      alert('Projeto criado com sucesso!');   // Temporário - usar toast
+    },
+
+    onError: (error: any) => {
+      alert(`Erro ao criar projeto: ${error.message}`);
     },
   });
 };
 
-// Similar para useAtualizarProjeto, useDeletarProjeto, useProjetoById, etc.
+// Hook para atualizar projeto (você pode criar useAtualizarProjeto similarmente)
+export const useAtualizarProjeto = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, dados }: { id: string; dados: ProjetoRequestDTO }) =>
+      apiClient.put<ProjetoResponseDTO>(`/projetos/${id}`, dados),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projetos'] });
+    },
+  });
+};
+
+// Hook para deletar
+export const useDeletarProjeto = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => apiClient.delete(`/projetos/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projetos'] });
+    },
+  });
+};
