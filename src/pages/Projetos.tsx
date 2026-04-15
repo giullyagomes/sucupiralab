@@ -146,7 +146,7 @@ export function Projetos() {
     const ghProjeto: ProjetoFinanciado = { ...payload, id, user_id: 'github-user', created_at: editing?.created_at ?? new Date().toISOString() }
     try {
       await saveProjeto(ghProjeto)
-    } catch (err: any) { toast({ title: 'Erro ao salvar', description: err.message, variant: 'destructive' }); return }
+    } catch (err: unknown) { toast({ title: 'Erro ao salvar', description: err instanceof Error ? err.message : String(err), variant: 'destructive' }); return }
     setProjetos(prev => editing ? prev.map(p => p.id === id ? ghProjeto : p) : [ghProjeto, ...prev])
     toast({ title: editing ? 'Projeto atualizado' : 'Projeto criado' })
     setShowForm(false)
@@ -161,7 +161,7 @@ export function Projetos() {
     }
     try {
       await deleteProjeto(id)
-    } catch (err: any) { toast({ title: 'Erro ao remover', variant: 'destructive' }); return }
+    } catch { toast({ title: 'Erro ao remover', variant: 'destructive' }); return }
     setProjetos(prev => prev.filter(p => p.id !== id))
     toast({ title: 'Projeto removido' })
   }

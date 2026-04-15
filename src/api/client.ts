@@ -1,4 +1,3 @@
-// src/api/client.ts
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
 console.log(' Usando API em:', API_BASE_URL);  
@@ -22,7 +21,7 @@ export const apiClient = {
   },
 
   // POST - criar novo registro
-  post: async <T>(endpoint: string, body: any): Promise<T> => {
+  post: async <T, B = Record<string, unknown>>(endpoint: string, body: B): Promise<T> => {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'POST',
       headers: {
@@ -40,7 +39,7 @@ export const apiClient = {
   },
 
   // PUT - atualizar registro
-  put: async <T>(endpoint: string, body: any): Promise<T> => {
+  put: async <T, B = Record<string, unknown>>(endpoint: string, body: B): Promise<T> => {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'PUT',
       headers: {
