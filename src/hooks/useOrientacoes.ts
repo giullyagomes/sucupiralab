@@ -21,8 +21,10 @@ export const useCriarOrientacao = () => {
       // alert('Orientação criada com sucesso!'); // substitua por toast depois
     },
 
-    onError: (error: any) => {
-      console.error('Erro ao criar orientação:', error);
+    onError: (error: Error | unknown) => {
+      const message = error instanceof Error ? error.message : 'Erro desconhecido';
+      console.error('Erro ao criar:', message);
+      // alert(message); // ou use toast
     },
   });
 };
