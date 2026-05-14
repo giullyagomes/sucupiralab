@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Plus, MessageSquareText, Pencil, Trash2, FileText, Link as LinkIcon } from 'lucide-react'
-import { useAuth } from '@/contexts/AuthContext'
-import { useDemoData } from '@/hooks/useDemoData'
 import { useToast } from '@/hooks/useToast'
 import { loadDiscursos, saveDiscurso, deleteDiscurso } from '@/lib/githubStorage'
 import { Button } from '@/components/ui/button'
@@ -54,21 +52,23 @@ const emptyForm: DiscursoForm = {
 }
 
 export function Discursos() {
-  const { isDemoMode } = useAuth()
-  const demo = useDemoData()
   const { toasts, toast, dismiss } = useToast()
-
-  const [discursos, setDiscursos] = useState<Discurso[]>(isDemoMode ? demo.discursos : [])
-  const [loading, setLoading] = useState(!isDemoMode)
+ 
+  const [discursos, setDiscursos] = useState<Discurso[]>([])
+  const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState<Discurso | null>(null)
   const [form, setForm] = useState<DiscursoForm>(emptyForm)
 
   useEffect(() => {
-    if (isDemoMode) return
-    loadDiscursos().then(data => { setDiscursos(data); setLoading(false) })
-      .catch(err => { toast({ title: 'Erro ao carregar', description: err.message, variant: 'destructive' }); setLoading(false) })
-  }, [isDemoMode])
+    loadDiscursos()
+      .then(setDiscursos)
+      .catch(err =>
+        toast({ title: 'Erro ao carregar', description: err.message, variant: 'destructive' }),
+      )
+      .finally(() => setLoading(false))
+  }, [toast])
+
 
   const years = [...new Set(discursos.map(d => d.ano))].sort((a, b) => b - a)
 
@@ -87,25 +87,13 @@ export function Discursos() {
 
   async function handleSave() {
     if (!form.descricao.trim()) { toast({ title: 'Descrição obrigatória', variant: 'destructive' }); return }
-    if (isDemoMode) {
-      if (editing) {
-        setDiscursos(prev => prev.map(d => d.id === editing.id ? { ...d, ...form, ano: Number(form.ano) } : d))
-      } else {
-        setDiscursos(prev => [{
-          id: Date.now().toString(), user_id: 'demo-user-id',
-          ...form, ano: Number(form.ano), created_at: new Date().toISOString(),
-        }, ...prev])
-      }
-      toast({ title: editing ? 'Discurso atualizado' : 'Discurso criado' })
-      setShowForm(false)
-      return
-    }
+    
     const now = new Date().toISOString()
     const id = editing ? editing.id : crypto.randomUUID()
     const ghDiscurso: Discurso = { ...form, ano: Number(form.ano), id, user_id: 'github-user', created_at: editing?.created_at ?? now }
     try {
       await saveDiscurso(ghDiscurso)
-    } catch (err: any) { toast({ title: 'Erro ao salvar', description: err.message, variant: 'destructive' }); return }
+    } catch (err: unknown) { toast({ title: 'Erro ao salvar', description: (err as Error).message, variant: 'destructive' }); return }
     setDiscursos(prev => editing ? prev.map(d => d.id === id ? ghDiscurso : d) : [ghDiscurso, ...prev])
     toast({ title: editing ? 'Discurso atualizado' : 'Discurso criado' })
     setShowForm(false)
@@ -113,14 +101,7 @@ export function Discursos() {
 
   async function handleDelete(id: string) {
     if (!confirm('Remover este discurso?')) return
-    if (isDemoMode) {
-      setDiscursos(prev => prev.filter(d => d.id !== id))
-      toast({ title: 'Discurso removido' })
-      return
-    }
-    try {
-      await deleteDiscurso(id)
-    } catch (err: any) { toast({ title: 'Erro ao remover', variant: 'destructive' }); return }
+    await deleteDiscurso(id)
     setDiscursos(prev => prev.filter(d => d.id !== id))
     toast({ title: 'Discurso removido' })
   }

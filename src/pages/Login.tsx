@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { FlaskConical, Loader2, LogIn, UserPlus } from 'lucide-react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/contexts/useAuth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -28,7 +28,8 @@ function validateRegisterForm(params: {
 }
 
 export function Login() {
-  const { user, loading, isAuthenticated, isDemoMode, signIn, signUp } = useAuth()
+  const { signIn, signUp } = useAuth()
+  const navigate = useNavigate()
 
   const [mode, setMode] = useState<AuthMode>('login')
   const [fullName, setFullName] = useState('')
@@ -37,10 +38,6 @@ export function Login() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
-  if (!loading && (isAuthenticated || isDemoMode || user)) {
-    return <Navigate to="/prestacoes" replace />
-  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -65,17 +62,20 @@ export function Login() {
       mode === 'login'
         ? await signIn(email.trim(), password)
         : await signUp({
-            fullName: fullName.trim(),
+            nomeCompleto: fullName.trim(),
             email: email.trim(),
-            password,
-            confirmPassword,
+            senha: password,
+            confirmarSenha: confirmPassword,
           })
 
     setSubmitting(false)
 
     if (!result.ok) {
       setError(result.error ?? 'Não foi possível concluir a autenticação.')
+      return
     }
+
+    navigate('/prestacoes', { replace: true })
   }
 
   return (

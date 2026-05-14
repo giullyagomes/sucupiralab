@@ -1,21 +1,20 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import App from './App'
 import './index.css'
-import App from './App.tsx'
-import { loadRuntimeConfig, getRuntimeConfig } from './lib/config'
-import { initFirebaseFromConfig } from './lib/firebase'
 
-async function bootstrap() {
-  // 1. Fetch /config.json (user-editable, no rebuild needed)
-  await loadRuntimeConfig()
-  // 2. Initialise Firebase if the config contains valid credentials
-  initFirebaseFromConfig(getRuntimeConfig().firebase)
-  // 3. Render React
-  createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-      <App />
-    </StrictMode>,
-  )
+import { AuthProvider } from '@/contexts/AuthProvider'
+
+const container = document.getElementById('root')
+
+if (!container) {
+  throw new Error('Root container not found')
 }
 
-bootstrap()
+createRoot(container).render(
+  <StrictMode>
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  </StrictMode>
+)

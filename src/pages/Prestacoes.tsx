@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
 import { Plus, Receipt, Pencil, Trash2, ChevronDown, ChevronUp, FileText, DollarSign, Paperclip, Download } from 'lucide-react'
-import { useAuth } from '@/contexts/AuthContext'
-import { useDemoData } from '@/hooks/useDemoData'
 import { useToast } from '@/hooks/useToast'
 import { loadPrestacoes, savePrestacaoFile, deletePrestacaoFile, uploadAnexo } from '@/lib/githubStorage'
 import { formatCurrency, formatDate } from '@/lib/utils'
@@ -24,6 +22,10 @@ function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
 }
 
 function exportPDF(prestacoes: Prestacao[]) {
@@ -72,13 +74,11 @@ const emptyDespesa: Omit<Despesa, 'id' | 'user_id' | 'prestacao_id' | 'created_a
 }
 
 export function Prestacoes() {
-  const { isDemoMode } = useAuth()
-  const demo = useDemoData()
   const { toasts, toast, dismiss } = useToast()
 
-  const [prestacoes, setPrestacoes] = useState<Prestacao[]>(isDemoMode ? demo.prestacoes : [])
-  const [despesas, setDespesas] = useState<Despesa[]>(isDemoMode ? demo.despesas : [])
-  const [loading, setLoading] = useState(!isDemoMode)
+  const [prestacoes, setPrestacoes] = useState<Prestacao[]>([])
+  const [despesas, setDespesas] = useState<Despesa[]>([])
+  const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState<string | null>(null)
 
   // Prestação form state
@@ -107,23 +107,21 @@ export function Prestacoes() {
   const prestacaoFileRef = useRef<HTMLInputElement>(null)
   const despesaFileRef = useRef<HTMLInputElement>(null)
 
+  
   useEffect(() => {
-    if (isDemoMode) return
-    loadPrestacoes().then(({ prestacoes: p, despesas: d }) => {
-      setPrestacoes(p)
-      setDespesas(d)
-      const pMap = new Map<string, Anexo[]>()
-      p.forEach(pr => { if (pr.anexos?.length) pMap.set(pr.id, pr.anexos) })
-      setPrestacaoAnexos(pMap)
-      const dMap = new Map<string, Anexo[]>()
-      d.forEach(de => { if (de.anexos?.length) dMap.set(de.id, de.anexos) })
-      setDespesaAnexos(dMap)
+  loadPrestacoes()
+    .then(data => {
+      setPrestacoes(data)
+      setDespesas([]) // ← temporário até backend suportar despesas
       setLoading(false)
-    }).catch(err => {
+    })
+    .catch(err => {
       toast({ title: 'Erro ao carregar', description: err.message, variant: 'destructive' })
       setLoading(false)
     })
-  }, [isDemoMode])
+}, [toast])
+
+
 
   const totalRecursos = prestacoes.reduce((s, p) => s + (p.total_recursos ?? 0), 0)
   const totalDespesas = despesas.reduce((s, d) => s + d.valor, 0)
@@ -171,46 +169,29 @@ export function Prestacoes() {
   async function handleSave() {
     if (!form.titulo.trim()) { toast({ title: 'Título obrigatório', variant: 'destructive' }); return }
 
-    let savedId: string | null = null
-
-    if (isDemoMode) {
-      if (editing) {
-        setPrestacoes(prev => prev.map(p => p.id === editing.id ? { ...p, ...form, updated_at: new Date().toISOString() } : p))
-        savedId = editing.id
-      } else {
-        const newP: Prestacao = { id: crypto.randomUUID(), user_id: 'demo-user-id', ...form, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
-        setPrestacoes(prev => [newP, ...prev])
-        savedId = newP.id
-      }
-      if (savedId && pendingAnexo) {
-        setPrestacaoAnexos(prev => { const next = new Map(prev); next.set(savedId!, [pendingAnexo]); return next })
-      }
-    } else {
-      const now = new Date().toISOString()
-      const id = editing ? editing.id : crypto.randomUUID()
-      let savedAnexo: Anexo | undefined = pendingAnexo ?? undefined
-      if (pendingFile) {
-        savedAnexo = await uploadAnexo('prestacoes', id, pendingFile)
-      }
-      const prestacao: Prestacao = {
-        id,
-        user_id: 'github-user',
-        ...form,
-        total_recursos: form.total_recursos ? Number(form.total_recursos) : undefined,
-        anexos: savedAnexo ? [savedAnexo] : [],
-        created_at: editing?.created_at ?? now,
-        updated_at: now,
-      }
-      try {
-        await savePrestacaoFile(prestacao, despesas)
-      } catch (err: any) {
-        toast({ title: 'Erro ao salvar', description: err.message, variant: 'destructive' }); return
-      }
-      setPrestacoes(prev => editing ? prev.map(p => p.id === id ? prestacao : p) : [prestacao, ...prev])
-      if (savedAnexo) {
-        setPrestacaoAnexos(prev => { const next = new Map(prev); next.set(id, [savedAnexo!]); return next })
-      }
-      savedId = id
+    const now = new Date().toISOString()
+    const id = editing ? editing.id : crypto.randomUUID()
+    let savedAnexo: Anexo | undefined = pendingAnexo ?? undefined
+    if (pendingFile) {
+      savedAnexo = await uploadAnexo(pendingFile)
+    }
+    const prestacao: Prestacao = {
+      id,
+      user_id: 'github-user',
+      ...form,
+      total_recursos: form.total_recursos ? Number(form.total_recursos) : undefined,
+      anexos: savedAnexo ? [savedAnexo] : [],
+      created_at: editing?.created_at ?? now,
+      updated_at: now,
+    }
+    try {
+      await savePrestacaoFile(prestacao)
+    } catch (err: unknown) {
+      toast({ title: 'Erro ao salvar', description: getErrorMessage(err), variant: 'destructive' }); return
+    }
+    setPrestacoes(prev => editing ? prev.map(p => p.id === id ? prestacao : p) : [prestacao, ...prev])
+    if (savedAnexo) {
+      setPrestacaoAnexos(prev => { const next = new Map(prev); next.set(id, [savedAnexo!]); return next })
     }
 
     toast({ title: editing ? 'Prestação atualizada' : 'Prestação criada' })
@@ -219,16 +200,10 @@ export function Prestacoes() {
 
   async function handleDelete(id: string) {
     if (!confirm('Remover esta prestação?')) return
-    if (isDemoMode) {
-      setPrestacoes(prev => prev.filter(p => p.id !== id))
-      setDespesas(prev => prev.filter(d => d.prestacao_id !== id))
-      toast({ title: 'Prestação removida' })
-      return
-    }
     try {
       await deletePrestacaoFile(id)
-    } catch (err: any) {
-      toast({ title: 'Erro ao remover', variant: 'destructive' }); return
+    } catch (err: unknown) {
+      toast({ title: 'Erro ao remover', description: getErrorMessage(err), variant: 'destructive' }); return
     }
     setPrestacoes(prev => prev.filter(p => p.id !== id))
     setDespesas(prev => prev.filter(d => d.prestacao_id !== id))
@@ -255,31 +230,24 @@ export function Prestacoes() {
   async function handleSaveDespesa() {
     if (!despesaForm.descricao.trim()) { toast({ title: 'Descrição obrigatória', variant: 'destructive' }); return }
 
-    if (isDemoMode) {
-      const nd: Despesa = { id: crypto.randomUUID(), user_id: 'demo-user-id', prestacao_id: currentPrestacaoId!, ...despesaForm, valor: Number(despesaForm.valor), created_at: new Date().toISOString() }
-      setDespesas(prev => [...prev, nd])
-      if (pendingDespesaAnexos.length > 0) {
-        setDespesaAnexos(prev => { const next = new Map(prev); next.set(nd.id, pendingDespesaAnexos); return next })
-      }
-    } else {
-      const id = crypto.randomUUID()
-      const now = new Date().toISOString()
-      let uploadedAnexos: Anexo[] = []
-      if (pendingDespesaFiles.length > 0) {
-        uploadedAnexos = await Promise.all(pendingDespesaFiles.map(f => uploadAnexo('despesas', id, f)))
-      }
-      const nd: Despesa = { id, user_id: 'github-user', prestacao_id: currentPrestacaoId!, ...despesaForm, valor: Number(despesaForm.valor), anexos: uploadedAnexos, created_at: now }
-      const updatedDespesas = [...despesas, nd]
-      const parentPrestacao = prestacoes.find(p => p.id === currentPrestacaoId!)!
-      try {
-        await savePrestacaoFile(parentPrestacao, updatedDespesas)
-      } catch (err: any) {
-        toast({ title: 'Erro ao salvar despesa', description: err.message, variant: 'destructive' }); return
-      }
-      setDespesas(updatedDespesas)
-      if (uploadedAnexos.length > 0) {
-        setDespesaAnexos(prev => { const next = new Map(prev); next.set(id, uploadedAnexos); return next })
-      }
+    const id = crypto.randomUUID()
+    const now = new Date().toISOString()
+    let uploadedAnexos: Anexo[] = []
+    if (pendingDespesaFiles.length > 0) {
+      uploadedAnexos = await Promise.all(
+      pendingDespesaFiles.map(f => uploadAnexo(f)))
+    }
+    const nd: Despesa = { id, user_id: 'github-user', prestacao_id: currentPrestacaoId!, ...despesaForm, valor: Number(despesaForm.valor), anexos: uploadedAnexos, created_at: now }
+    const updatedDespesas = [...despesas, nd]
+    const parentPrestacao = prestacoes.find(p => p.id === currentPrestacaoId!)!
+    try {
+      await savePrestacaoFile(parentPrestacao)
+    } catch (err: unknown) {
+      toast({ title: 'Erro ao salvar despesa', description: getErrorMessage(err), variant: 'destructive' }); return
+    }
+    setDespesas(updatedDespesas)
+    if (uploadedAnexos.length > 0) {
+      setDespesaAnexos(prev => { const next = new Map(prev); next.set(id, uploadedAnexos); return next })
     }
 
     toast({ title: 'Despesa adicionada' })

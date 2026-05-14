@@ -3,8 +3,6 @@ import {
   Plus, GraduationCap, Pencil, Trash2, FileText, ChevronDown, ChevronUp,
   BookOpen, Link2, Paperclip, Download, X, CalendarDays,
 } from 'lucide-react'
-import { useAuth } from '@/contexts/AuthContext'
-import { useDemoData } from '@/hooks/useDemoData'
 import { useToast } from '@/hooks/useToast'
 import { loadOrientacoes, saveOrientacaoFile, deleteOrientacaoFile, uploadAnexo } from '@/lib/githubStorage'
 import { Button } from '@/components/ui/button'
@@ -135,13 +133,12 @@ const emptyForm: OrientacaoForm = {
 /* ─── Component ──────────────────────────────────────────────────────── */
 
 export function Orientacoes() {
-  const { isDemoMode } = useAuth()
-  const demo = useDemoData()
   const { toasts, toast, dismiss } = useToast()
 
-  const [orientacoes, setOrientacoes] = useState<Orientacao[]>(isDemoMode ? demo.orientacoes : [])
-  const [tarefas, setTarefas] = useState<Tarefa[]>(isDemoMode ? demo.tarefas : [])
-  const [loading, setLoading] = useState(!isDemoMode)
+  const [orientacoes, setOrientacoes] = useState<Orientacao[]>([])
+  const [tarefas, setTarefas] = useState<Tarefa[]>([])
+  const [loading, setLoading] = useState(true)
+
 
   // Dialog / form
   const [showForm, setShowForm] = useState(false)
@@ -163,14 +160,19 @@ export function Orientacoes() {
   const [novaReuniaoData, setNovaReuniaoData] = useState('')
   const [novaReuniaoTexto, setNovaReuniaoTexto] = useState('')
 
-  useEffect(() => {
-    if (isDemoMode) return
-    loadOrientacoes().then(({ orientacoes: o, tarefas: t }) => {
-      setOrientacoes(o)
-      setTarefas(t)
-      setLoading(false)
-    }).catch(err => { toast({ title: 'Erro ao carregar', description: err.message, variant: 'destructive' }); setLoading(false) })
-  }, [isDemoMode])
+  
+useEffect(() => {
+  loadOrientacoes()
+    .then(({ orientacoes, tarefas }) => {
+      setOrientacoes(orientacoes)
+      setTarefas(tarefas)
+    })
+    .catch(err =>
+      toast({ title: 'Erro ao carregar', description: err.message, variant: 'destructive' })
+    )
+    .finally(() => setLoading(false))
+}, [toast])
+
 
   /* ── Form open/close ── */
 
@@ -221,26 +223,6 @@ export function Orientacoes() {
       projeto_original,
     }
 
-    if (isDemoMode) {
-      if (editing) {
-        setOrientacoes(prev => prev.map(o =>
-          o.id === editing.id ? { ...o, ...payload, updated_at: new Date().toISOString() } : o
-        ))
-      } else {
-        setOrientacoes(prev => [{
-          id: Date.now().toString(),
-          user_id: 'demo-user-id',
-          ...payload,
-          reunioes: [],
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        } as Orientacao, ...prev])
-      }
-      toast({ title: editing ? 'Orientação atualizada' : 'Orientação criada' })
-      setPendingProjetoOriginal(null)
-      setShowForm(false)
-      return
-    }
 
     const now = new Date().toISOString()
     const id = editing ? editing.id : crypto.randomUUID()
@@ -259,7 +241,7 @@ export function Orientacoes() {
     }
     try {
       await saveOrientacaoFile(ghOrientacao, tarefas)
-    } catch (err: any) { toast({ title: 'Erro ao salvar', description: err.message, variant: 'destructive' }); return }
+    } catch (err: unknown) { toast({ title: 'Erro ao salvar', description: (err as Error).message, variant: 'destructive' }); return }
     setOrientacoes(prev => editing ? prev.map(o => o.id === id ? ghOrientacao : o) : [ghOrientacao, ...prev])
     toast({ title: editing ? 'Orientação atualizada' : 'Orientação criada' })
     setPendingProjetoOriginal(null)
@@ -269,15 +251,9 @@ export function Orientacoes() {
 
   async function handleDelete(id: string) {
     if (!confirm('Remover esta orientação?')) return
-    if (isDemoMode) {
-      setOrientacoes(prev => prev.filter(o => o.id !== id))
-      setTarefas(prev => prev.filter(t => t.orientacao_id !== id))
-      toast({ title: 'Orientação removida' })
-      return
-    }
     try {
       await deleteOrientacaoFile(id)
-    } catch (err: any) { toast({ title: 'Erro ao remover', variant: 'destructive' }); return }
+    } catch (err: unknown) { toast({ title: 'Erro ao remover', description: (err as Error).message, variant: 'destructive' }); return }
     setOrientacoes(prev => prev.filter(o => o.id !== id))
     setTarefas(prev => prev.filter(t => t.orientacao_id !== id))
     toast({ title: 'Orientação removida' })
@@ -287,16 +263,7 @@ export function Orientacoes() {
 
   async function addTarefa(orientacaoId: string) {
     if (!newTarefa.trim()) return
-    if (isDemoMode) {
-      const t: Tarefa = {
-        id: Date.now().toString(), user_id: 'demo-user-id',
-        orientacao_id: orientacaoId, descricao: newTarefa,
-        concluida: false, created_at: new Date().toISOString(),
-      }
-      setTarefas(prev => [...prev, t])
-      setNewTarefa('')
-      return
-    }
+
     const t: Tarefa = { id: crypto.randomUUID(), user_id: 'github-user', orientacao_id: orientacaoId, descricao: newTarefa, concluida: false, created_at: new Date().toISOString() }
     const updatedTarefas = [...tarefas, t]
     setTarefas(updatedTarefas)
@@ -306,10 +273,6 @@ export function Orientacoes() {
   }
 
   async function toggleTarefa(t: Tarefa) {
-    if (isDemoMode) {
-      setTarefas(prev => prev.map(x => x.id === t.id ? { ...x, concluida: !x.concluida } : x))
-      return
-    }
     const updatedTarefas = tarefas.map(x => x.id === t.id ? { ...x, concluida: !x.concluida } : x)
     setTarefas(updatedTarefas)
     const orientacao = orientacoes.find(o => o.id === t.orientacao_id)!
@@ -332,10 +295,7 @@ export function Orientacoes() {
     setNovaReuniaoTexto('')
     setNovaReuniaoData('')
     setActiveReuniaoId(null)
-    if (!isDemoMode) {
-      const updatedO = updatedOrientacoes.find(o => o.id === orientacaoId)!
-      saveOrientacaoFile(updatedO, tarefas).catch(() => {})
-    }
+
   }
 
   function deleteReuniao(orientacaoId: string, reuniaoId: string) {
@@ -344,10 +304,7 @@ export function Orientacoes() {
         : { ...o, reunioes: (o.reunioes ?? []).filter(r => r.id !== reuniaoId) }
     )
     setOrientacoes(updatedOrientacoes)
-    if (!isDemoMode) {
-      const updatedO = updatedOrientacoes.find(o => o.id === orientacaoId)!
-      saveOrientacaoFile(updatedO, tarefas).catch(() => {})
-    }
+    
   }
 
   /* ── File picker ── */

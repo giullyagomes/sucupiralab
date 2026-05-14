@@ -3,8 +3,6 @@ import { Globe, Plus, Pencil, Trash2, FileSpreadsheet, FileText, ChevronDown, Ch
 import * as XLSX from 'xlsx'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
-import { useAuth } from '@/contexts/AuthContext'
-import { useDemoData } from '@/hooks/useDemoData'
 import { useToast } from '@/hooks/useToast'
 import {
   loadInternacionalizacoes,
@@ -112,9 +110,7 @@ function exportPDF(items: Internacionalizacao[]) {
 // ─── Page component ───────────────────────────────────────────────────────
 
 export function Internacionalizacao() {
-  const { isDemoMode } = useAuth()
   const { toast } = useToast()
-  const demo = useDemoData()
 
   const [items, setItems] = useState<Internacionalizacao[]>([])
   const [loading, setLoading] = useState(true)
@@ -127,17 +123,11 @@ export function Internacionalizacao() {
 
   // ── Load data ──────────────────────────────────────────────────────────
   useEffect(() => {
-    if (isDemoMode) {
-      setItems(demo.internacionalizacoes)
-      setLoading(false)
-      return
-    }
     loadInternacionalizacoes()
       .then(setItems)
       .catch((err) => toast({ title: 'Erro ao carregar', description: err.message, variant: 'destructive' }))
       .finally(() => setLoading(false))
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDemoMode])
+  }, [toast])
 
   // ── Derived data ───────────────────────────────────────────────────────
   const filtered = items.filter(
@@ -204,30 +194,6 @@ export function Internacionalizacao() {
 
     setSaving(true)
 
-    if (isDemoMode) {
-      const now = new Date().toISOString()
-      if (editing) {
-        setItems((prev) =>
-          prev.map((i) => (i.id === editing.id ? { ...i, ...payload, updated_at: now } : i))
-        )
-      } else {
-        setItems((prev) => [
-          {
-            id: Date.now().toString(),
-            user_id: 'demo-user-id',
-            ...payload,
-            created_at: now,
-            updated_at: now,
-          } as Internacionalizacao,
-          ...prev,
-        ])
-      }
-      toast({ title: editing ? 'Registro atualizado' : 'Registro criado' })
-      setSaving(false)
-      setShowForm(false)
-      return
-    }
-
     const now = new Date().toISOString()
     const id = editing ? editing.id : crypto.randomUUID()
     const ghItem: Internacionalizacao = {
@@ -239,8 +205,8 @@ export function Internacionalizacao() {
     }
     try {
       await saveInternacionalizacao(ghItem)
-    } catch (err: any) {
-      toast({ title: 'Erro ao salvar', description: err.message, variant: 'destructive' })
+    } catch (err: unknown) {
+      toast({ title: 'Erro ao salvar', description: (err as Error).message, variant: 'destructive' })
       setSaving(false)
       return
     }
@@ -255,17 +221,9 @@ export function Internacionalizacao() {
   // ── Delete ─────────────────────────────────────────────────────────────
   async function handleDelete(id: string) {
     if (!confirm('Remover este registro de internacionalização?')) return
-    if (isDemoMode) {
-      setItems((prev) => prev.filter((i) => i.id !== id))
-    } else {
-      try {
-        await deleteInternacionalizacao(id)
-        setItems((prev) => prev.filter((i) => i.id !== id))
-      } catch (err: any) {
-        toast({ title: 'Erro ao remover', description: err.message, variant: 'destructive' })
-        return
-      }
-    }
+
+    await deleteInternacionalizacao(id)
+    setItems((prev) => prev.filter((i) => i.id !== id))
     toast({ title: 'Registro removido' })
   }
 

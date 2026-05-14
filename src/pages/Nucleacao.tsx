@@ -3,8 +3,6 @@ import { Network, Plus, Pencil, Trash2, FileSpreadsheet, FileText, Filter } from
 import * as XLSX from 'xlsx'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
-import { useAuth } from '@/contexts/AuthContext'
-import { useDemoData } from '@/hooks/useDemoData'
 import { useToast } from '@/hooks/useToast'
 import { loadNucleacoes, saveNucleacao, deleteNucleacao } from '@/lib/githubStorage'
 import { Button } from '@/components/ui/button'
@@ -110,9 +108,7 @@ function exportPDF(nucleacoes: Nucleacao[]) {
 // ─── Page component ───────────────────────────────────────────────────────
 
 export function Nucleacao() {
-  const { isDemoMode } = useAuth()
   const { toast } = useToast()
-  const demo = useDemoData()
 
   const [nucleacoes, setNucleacoes] = useState<Nucleacao[]>([])
   const [loading, setLoading] = useState(true)
@@ -124,18 +120,16 @@ export function Nucleacao() {
   const [filterTipo, setFilterTipo] = useState('Todos')
 
   // ── Load data ──────────────────────────────────────────────────────────
+  
   useEffect(() => {
-    if (isDemoMode) {
-      setNucleacoes(demo.nucleacoes)
-      setLoading(false)
-      return
-    }
     loadNucleacoes()
       .then(setNucleacoes)
-      .catch((err) => toast({ title: 'Erro ao carregar', description: err.message, variant: 'destructive' }))
+      .catch(err =>
+        toast({ title: 'Erro ao carregar', description: err.message, variant: 'destructive' })
+      )
       .finally(() => setLoading(false))
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDemoMode])
+  }, [toast])
+
 
   // ── Derived data ───────────────────────────────────────────────────────
   const filtered = nucleacoes.filter(
@@ -200,24 +194,6 @@ export function Nucleacao() {
 
     setSaving(true)
 
-    if (isDemoMode) {
-      const now = new Date().toISOString()
-      if (editing) {
-        setNucleacoes((prev) =>
-          prev.map((n) => (n.id === editing.id ? { ...n, ...payload, updated_at: now } : n))
-        )
-      } else {
-        setNucleacoes((prev) => [
-          { id: Date.now().toString(), user_id: 'demo-user-id', ...payload, created_at: now, updated_at: now } as Nucleacao,
-          ...prev,
-        ])
-      }
-      toast({ title: editing ? 'Registro atualizado' : 'Registro criado' })
-      setSaving(false)
-      setShowForm(false)
-      return
-    }
-
     const now = new Date().toISOString()
     const id = editing ? editing.id : crypto.randomUUID()
     const ghNucleacao: Nucleacao = {
@@ -229,8 +205,8 @@ export function Nucleacao() {
     }
     try {
       await saveNucleacao(ghNucleacao)
-    } catch (err: any) {
-      toast({ title: 'Erro ao salvar', description: err.message, variant: 'destructive' })
+    } catch (err: unknown) {
+      toast({ title: 'Erro ao salvar', description: (err as Error).message, variant: 'destructive' })
       setSaving(false)
       return
     }
@@ -245,17 +221,9 @@ export function Nucleacao() {
   // ── Delete ─────────────────────────────────────────────────────────────
   async function handleDelete(id: string) {
     if (!confirm('Remover este registro de nucleação?')) return
-    if (isDemoMode) {
-      setNucleacoes((prev) => prev.filter((n) => n.id !== id))
-    } else {
-      try {
-        await deleteNucleacao(id)
-        setNucleacoes((prev) => prev.filter((n) => n.id !== id))
-      } catch (err: any) {
-        toast({ title: 'Erro ao remover', description: err.message, variant: 'destructive' })
-        return
-      }
-    }
+      
+    await deleteNucleacao(id)
+    setNucleacoes(prev => prev.filter(n => n.id !== id))
     toast({ title: 'Registro removido' })
   }
 

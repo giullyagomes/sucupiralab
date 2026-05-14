@@ -1,7 +1,6 @@
+
 import { useState, useEffect } from 'react'
 import { Plus, FolderKanban, Pencil, Trash2, FileText, Users, DollarSign, Calendar } from 'lucide-react'
-import { useAuth } from '@/contexts/AuthContext'
-import { useDemoData } from '@/hooks/useDemoData'
 import { useToast } from '@/hooks/useToast'
 import { loadProjetos, saveProjeto, deleteProjeto } from '@/lib/githubStorage'
 import { formatCurrency, formatDate } from '@/lib/utils'
@@ -18,43 +17,7 @@ import * as XLSX from 'xlsx'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 
-function exportPDF(projetos: ProjetoFinanciado[]) {
-  const doc = new jsPDF()
-  doc.setFontSize(16)
-  doc.text('Projetos Financiados', 14, 22)
-  autoTable(doc, {
-    startY: 30,
-    head: [['Nome do Projeto', 'Financiadores', 'Vigência', 'Total Aportes', 'Instituições']],
-    body: projetos.map(p => [
-      p.nome_projeto,
-      p.financiadores ?? '—',
-      p.vigencia_inicio ? `${formatDate(p.vigencia_inicio)} – ${formatDate(p.vigencia_fim ?? null)}` : '—',
-      p.total_aportes != null ? formatCurrency(p.total_aportes) : '—',
-      p.instituicoes_envolvidas ?? '—',
-    ]),
-    styles: { fontSize: 9 },
-    headStyles: { fillColor: [202, 138, 4] },
-  })
-  doc.save('projetos.pdf')
-}
 
-function exportExcel(projetos: ProjetoFinanciado[]) {
-  const ws = XLSX.utils.json_to_sheet(projetos.map(p => ({
-    'Nome do Projeto': p.nome_projeto,
-    'Nº Processo': p.numero_processo ?? '',
-    'Chamadas/Editais': p.chamadas_editais ?? '',
-    'Financiadores': p.financiadores ?? '',
-    'Docentes': (p.docentes_envolvidos ?? []).join('; '),
-    'Total Aportes': p.total_aportes ?? '',
-    'Vigência Início': p.vigencia_inicio ?? '',
-    'Vigência Fim': p.vigencia_fim ?? '',
-    'Resumo do Projeto': p.resumo_projeto ?? '',
-    'Instituições Envolvidas': p.instituicoes_envolvidas ?? '',
-  })))
-  const wb = XLSX.utils.book_new()
-  XLSX.utils.book_append_sheet(wb, ws, 'Projetos')
-  XLSX.writeFile(wb, 'projetos.xlsx')
-}
 
 type ProjetoForm = Omit<ProjetoFinanciado, 'id' | 'user_id' | 'created_at'> & {
   docentes_str: string
@@ -75,95 +38,154 @@ const emptyForm: ProjetoForm = {
 }
 
 export function Projetos() {
-  const { isDemoMode } = useAuth()
-  const demo = useDemoData()
   const { toasts, toast, dismiss } = useToast()
 
-  const [projetos, setProjetos] = useState<ProjetoFinanciado[]>(isDemoMode ? demo.projetos : [])
-  const [loading, setLoading] = useState(!isDemoMode)
+  const [projetos, setProjetos] = useState<ProjetoFinanciado[]>([])
+  const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState<ProjetoFinanciado | null>(null)
   const [form, setForm] = useState<ProjetoForm>(emptyForm)
 
   useEffect(() => {
-    if (isDemoMode) return
-    loadProjetos().then(data => { setProjetos(data); setLoading(false) })
-      .catch(err => { toast({ title: 'Erro ao carregar', description: err.message, variant: 'destructive' }); setLoading(false) })
-  }, [isDemoMode])
+    loadProjetos()
+      .then(setProjetos)
+      .catch(err =>
+        toast({ title: 'Erro ao carregar', description: err.message, variant: 'destructive' }),
+      )
+      .finally(() => setLoading(false))
+  }, [])
 
   const totalAportes = projetos.reduce((s, p) => s + (p.total_aportes ?? 0), 0)
 
-  function openNew() { setEditing(null); setForm(emptyForm); setShowForm(true) }
+  function openNew() {
+    setEditing(null)
+    setForm(emptyForm)
+    setShowForm(true)
+  }
+
   function openEdit(p: ProjetoFinanciado) {
     setEditing(p)
     setForm({
-      nome_projeto: p.nome_projeto,
-      numero_processo: p.numero_processo ?? '',
-      chamadas_editais: p.chamadas_editais ?? '',
-      financiadores: p.financiadores ?? '',
-      docentes_envolvidos: p.docentes_envolvidos ?? [],
+      ...p,
       docentes_str: (p.docentes_envolvidos ?? []).join('; '),
-      total_aportes: p.total_aportes,
-      vigencia_inicio: p.vigencia_inicio ?? '',
-      vigencia_fim: p.vigencia_fim ?? '',
-      resumo_projeto: p.resumo_projeto ?? '',
-      instituicoes_envolvidas: p.instituicoes_envolvidas ?? '',
     })
     setShowForm(true)
   }
 
   async function handleSave() {
-    if (!form.nome_projeto.trim()) { toast({ title: 'Nome do projeto obrigatório', variant: 'destructive' }); return }
-    const docentes = form.docentes_str.split(';').map(s => s.trim()).filter(Boolean)
-    const payload = {
-      nome_projeto: form.nome_projeto,
-      numero_processo: form.numero_processo,
-      chamadas_editais: form.chamadas_editais,
-      financiadores: form.financiadores,
-      docentes_envolvidos: docentes,
-      total_aportes: form.total_aportes ? Number(form.total_aportes) : undefined,
-      vigencia_inicio: form.vigencia_inicio,
-      vigencia_fim: form.vigencia_fim,
-      resumo_projeto: form.resumo_projeto,
-      instituicoes_envolvidas: form.instituicoes_envolvidas,
-    }
-    if (isDemoMode) {
-      if (editing) {
-        setProjetos(prev => prev.map(p => p.id === editing.id ? { ...p, ...payload } : p))
-      } else {
-        setProjetos(prev => [{
-          id: Date.now().toString(),
-          user_id: 'demo-user-id',
-          ...payload,
-          created_at: new Date().toISOString(),
-        } as ProjetoFinanciado, ...prev])
-      }
-      toast({ title: editing ? 'Projeto atualizado' : 'Projeto criado' })
-      setShowForm(false)
+    if (!form.nome_projeto.trim()) {
+      toast({ title: 'Nome do projeto obrigatório', variant: 'destructive' })
       return
     }
+
+    const docentes = form.docentes_str
+      .split(';')
+      .map(s => s.trim())
+      .filter(Boolean)
+
+    const now = new Date().toISOString()
     const id = editing ? editing.id : crypto.randomUUID()
-    const ghProjeto: ProjetoFinanciado = { ...payload, id, user_id: 'github-user', created_at: editing?.created_at ?? new Date().toISOString() }
+
+    const projeto: ProjetoFinanciado = {
+      ...form,
+      docentes_envolvidos: docentes,
+      total_aportes: form.total_aportes ? Number(form.total_aportes) : undefined,
+      id,
+      user_id: 'github-user',
+      created_at: editing?.created_at ?? now,
+    }
+
     try {
-      await saveProjeto(ghProjeto)
-    } catch (err: unknown) { toast({ title: 'Erro ao salvar', description: err instanceof Error ? err.message : String(err), variant: 'destructive' }); return }
-    setProjetos(prev => editing ? prev.map(p => p.id === id ? ghProjeto : p) : [ghProjeto, ...prev])
-    toast({ title: editing ? 'Projeto atualizado' : 'Projeto criado' })
-    setShowForm(false)
+      await saveProjeto(projeto)
+      setProjetos(prev =>
+        editing ? prev.map(p => (p.id === id ? projeto : p)) : [projeto, ...prev],
+      )
+      toast({ title: editing ? 'Projeto atualizado' : 'Projeto criado' })
+      setShowForm(false)
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err)
+      toast({ title: 'Erro ao salvar', description: message, variant: 'destructive' })
+    }
   }
 
   async function handleDelete(id: string) {
     if (!confirm('Remover este projeto?')) return
-    if (isDemoMode) {
-      setProjetos(prev => prev.filter(p => p.id !== id))
-      toast({ title: 'Projeto removido' })
-      return
-    }
-    try {
-      await deleteProjeto(id)
-    } catch { toast({ title: 'Erro ao remover', variant: 'destructive' }); return }
+    await deleteProjeto(id)
     setProjetos(prev => prev.filter(p => p.id !== id))
     toast({ title: 'Projeto removido' })
+  }
+
+  function exportExcel(projetos: ProjetoFinanciado[]): void {
+    if (projetos.length === 0) {
+      toast({ title: 'Nenhum projeto para exportar', variant: 'default' })
+      return
+    }
+
+    const rows = projetos.map(projeto => ({
+      'Nome do Projeto': projeto.nome_projeto,
+      'Número do Processo': projeto.numero_processo || '',
+      'Chamadas/Editais': projeto.chamadas_editais || '',
+      'Financiadores': projeto.financiadores || '',
+      'Docentes Envolvidos': (projeto.docentes_envolvidos ?? []).join('; '),
+      'Instituições Envolvidas': projeto.instituicoes_envolvidas || '',
+      'Vigência Início': projeto.vigencia_inicio ? formatDate(projeto.vigencia_inicio) : '',
+      'Vigência Fim': projeto.vigencia_fim ? formatDate(projeto.vigencia_fim) : '',
+      'Total Aportes': projeto.total_aportes ?? '',
+      'Resumo do Projeto': projeto.resumo_projeto || '',
+      'Criado em': projeto.created_at ? formatDate(projeto.created_at) : '',
+    }))
+
+    const worksheet = XLSX.utils.json_to_sheet(rows)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Projetos')
+
+    XLSX.writeFile(workbook, 'projetos_financiados.xlsx')
+  }
+
+  function exportPDF(projetos: ProjetoFinanciado[]): void {
+    if (projetos.length === 0) {
+      toast({ title: 'Nenhum projeto para exportar', variant: 'default' })
+      return
+    }
+
+    const doc = new jsPDF()
+    doc.text('Projetos Financiados', 20, 20)
+
+    const rows = projetos.map(projeto => [
+      projeto.nome_projeto,
+      projeto.numero_processo || '',
+      projeto.chamadas_editais || '',
+      projeto.financiadores || '',
+      (projeto.docentes_envolvidos ?? []).join('; '),
+      projeto.instituicoes_envolvidas || '',
+      projeto.vigencia_inicio ? formatDate(projeto.vigencia_inicio) : '',
+      projeto.vigencia_fim ? formatDate(projeto.vigencia_fim) : '',
+      projeto.total_aportes ?? '',
+      projeto.resumo_projeto || '',
+      projeto.created_at ? formatDate(projeto.created_at) : '',
+    ])
+
+    const headers = [
+      'Nome do Projeto',
+      'Número do Processo',
+      'Chamadas/Editais',
+      'Financiadores',
+      'Docentes Envolvidos',
+      'Instituições Envolvidas',
+      'Vigência Início',
+      'Vigência Fim',
+      'Total Aportes',
+      'Resumo do Projeto',
+      'Criado em',
+    ]
+
+    autoTable(doc, {
+      head: [headers],
+      body: rows,
+      startY: 30,
+    })
+
+    doc.save('projetos_financiados.pdf')
   }
 
   return (

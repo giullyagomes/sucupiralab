@@ -9,26 +9,12 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/hooks/useToast'
 import { ToastContainer } from '@/components/ui/toast'
 import { loadProducao, savePublicacao } from '@/lib/githubStorage'
 import type { Publicacao } from '@/types'
 
 type ProducaoItem = Publicacao
-
-const _NOW = new Date().toISOString()
-const _D = { user_id: 'demo-user-id', created_at: _NOW, updated_at: _NOW }
-
-const DEMO_PRODUCAO: ProducaoItem[] = [
-  { ..._D, id: '1', tipo: 'artigo', titulo: 'Deep Learning for Educational Data Mining: A Systematic Review', autores: ['João Silva', 'Ana Mendes', 'Bruno Lima'], ano: 2024, venue: 'Computers & Education', doi: '10.1016/j.compedu.2024.001', qualis: 'A1', citacoes: 12 },
-  { ..._D, id: '2', tipo: 'artigo', titulo: 'Predicting Student Dropout Using Random Forest Ensembles', autores: ['João Silva', 'Carla Nunes'], ano: 2023, venue: 'Journal of Learning Analytics', qualis: 'A2', citacoes: 28 },
-  { ..._D, id: '3', tipo: 'artigo', titulo: 'Natural Language Processing in Educational Chatbots', autores: ['Bruno Lima', 'João Silva'], ano: 2023, venue: 'Educational Technology & Society', qualis: 'A1', citacoes: 7 },
-  { ..._D, id: '4', tipo: 'capitulo', titulo: 'Inteligência Artificial na Educação: Perspectivas e Desafios', autores: ['João Silva'], ano: 2024, venue: 'Inovações Tecnológicas na Educação (Org. Maria Santos)', citacoes: 3 },
-  { ..._D, id: '5', tipo: 'congresso', titulo: 'LLM-based Feedback Generation for Programming Exercises', autores: ['Bruno Lima', 'João Silva', 'Ana Mendes'], ano: 2024, venue: 'ICALT 2024 — IEEE International Conference on Advanced Learning Technologies', citacoes: 2 },
-  { ..._D, id: '6', tipo: 'congresso', titulo: 'Sentiment Analysis in Online Discussion Forums for Learning Analytics', autores: ['Carla Nunes', 'João Silva'], ano: 2023, venue: 'SBIE 2023 — Simpósio Brasileiro de Informática na Educação', citacoes: 5 },
-  { ..._D, id: '7', tipo: 'livro', titulo: 'Mineração de Dados Educacionais: Teoria e Prática', autores: ['João Silva', 'Maria Santos'], ano: 2023, venue: 'Editora Brasport', citacoes: 15 },
-]
 
 const TIPO_CONFIG: Record<string, { label: string; icon: React.ComponentType<{ className?: string }>; bg: string; text: string }> = {
   artigo: { label: 'Artigos', icon: FileText, bg: 'bg-blue-100', text: 'text-blue-700' },
@@ -96,7 +82,7 @@ function parseLattesCitation(
   let autores: string[] = []
   let venue: string | undefined
   // Reclassify livro → capitulo when the entry embeds a host book (". In: ")
-  let finalTipo: ProducaoItem['tipo'] = (tipo === 'livro' && text.includes('. In: ')) ? 'capitulo' : tipo
+  const finalTipo: ProducaoItem['tipo'] = (tipo === 'livro' && text.includes('. In: ')) ? 'capitulo' : tipo
 
   // Standard Lattes citation: "AUTHORS. Title. Venue, vol, year."
   // Split on ". " followed by an uppercase/quote — handles accented Portuguese initials too
@@ -226,23 +212,27 @@ function exportPDF(items: ProducaoItem[]) {
 }
 
 export function Producao() {
-  const { isDemoMode } = useAuth()
 
   const { toasts, toast, dismiss } = useToast()
 
-  const [producao, setProducao] = useState<ProducaoItem[]>(isDemoMode ? DEMO_PRODUCAO : [])
-  const [loading, setLoading] = useState(!isDemoMode)
+  const [producao, setProducao] = useState<ProducaoItem[]>([])
+  const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [activeTab, setActiveTab] = useState('todos')
   const [importing, setImporting] = useState(false)
   const [importPreview, setImportPreview] = useState<ProducaoItem[] | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  
   useEffect(() => {
-    if (isDemoMode) return
-    loadProducao().then(data => { setProducao(data); setLoading(false) })
-      .catch(err => { toast({ title: 'Erro ao carregar', description: err.message, variant: 'destructive' }); setLoading(false) })
-  }, [isDemoMode])
+    loadProducao()
+      .then(data => setProducao(data))
+     .catch(err =>
+        toast({ title: 'Erro ao carregar', description: err.message, variant: 'destructive' })
+      )
+     .finally(() => setLoading(false))
+  }, )
+
 
   const filtered = producao.filter(p => {
     const matchSearch = !search ||
@@ -279,7 +269,7 @@ export function Producao() {
 
     const parsed = parseLattesHTML(html)
     const now = new Date().toISOString()
-    setImportPreview(parsed.map(p => ({ ...p, user_id: isDemoMode ? 'demo-user-id' : 'github-user', created_at: now, updated_at: now })))
+    setImportPreview(parsed.map(p => ({ ...p, user_id: 'github-user', created_at: now, updated_at: now })))
     setImporting(false)
     e.target.value = ''
   }
@@ -504,17 +494,11 @@ export function Producao() {
             </Button>
             <Button onClick={async () => {
               const items = importPreview ?? []
-              if (!isDemoMode) {
-                const now = new Date().toISOString()
-                const ghItems = items.map(item => ({ ...item, id: crypto.randomUUID(), user_id: 'github-user', created_at: now, updated_at: now }))
-                try {
-                  await Promise.all(ghItems.map(p => savePublicacao(p)))
-                } catch (err: any) { toast({ title: 'Erro ao importar', description: err.message, variant: 'destructive' }); return }
-                setProducao(prev => [...ghItems, ...prev])
-              } else {
-                setProducao(prev => [...items, ...prev])
-              }
+              
+              Promise.all(items.map(p => savePublicacao(p)))
+              setProducao(prev => [...items, ...prev])
               toast({ title: `${items.length} publicações importadas` })
+
               setImportPreview(null)
             }}>
               Importar Tudo
